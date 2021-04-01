@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,7 +19,12 @@ import com.carta.nbaservice.services.GameService;
 @RequestMapping(path = "/games")
 public class GameController {
 
-    private GameService gameService;
+    private final GameService gameService;
+
+    @Autowired
+    public GameController(GameService gameService) {
+        this.gameService = gameService;
+    }
 
     @GetMapping(value = "/{gameId}")
     public GameDto getGame(@PathVariable(value = "gameId") int gameId) {

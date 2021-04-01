@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.carta.nbaservice.entities.Game;
+import com.carta.nbaservice.entities.Player;
 
 @SpringBootTest
 class NbaServiceTest {
@@ -42,5 +43,14 @@ class NbaServiceTest {
         List<Game> games = nbaService.getAllGamesForDate(date);
 
         assertThat(games, hasSize(4));
+    }
+
+    @Test
+    void givenGameId_whenGettingGameStatistics_thenShouldReturnPlayersStatisticsForGame() {
+        long gameId = 264405;
+
+        List<Player> players = nbaService.getPlayersFromGame(gameId);
+
+        assertThat(players, hasSize(25));
     }
 }

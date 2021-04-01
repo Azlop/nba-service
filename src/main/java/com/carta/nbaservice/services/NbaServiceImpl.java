@@ -5,7 +5,6 @@ import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -14,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.carta.nbaservice.entities.DataGames;
+import com.carta.nbaservice.entities.DataPlayers;
 import com.carta.nbaservice.entities.Game;
 import com.carta.nbaservice.entities.Player;
 
@@ -44,7 +44,7 @@ public class NbaServiceImpl implements NbaService {
         HttpEntity<String> httpEntity = new HttpEntity<>(httpHeaders);
 
         String gamesForDate = String.join("?", GAMES_URI, "dates[]=\"" + date + "\"");
-        ResponseEntity<DataGames> response = restTemplate.exchange(gamesForDate, HttpMethod.GET, httpEntity, new ParameterizedTypeReference<DataGames>() {});
+        ResponseEntity<DataGames> response = restTemplate.exchange(gamesForDate, HttpMethod.GET, httpEntity, DataGames.class);
         return Objects.requireNonNull(response.getBody()).getGames();
     }
 
@@ -64,6 +64,15 @@ public class NbaServiceImpl implements NbaService {
 
     @Override
     public List<Player> getPlayersFromGame(long gameId) {
-        return null;
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.set(HEADER_KEY, KEY);
+        httpHeaders.set(HEADER_HOST, HOST);
+
+        HttpEntity<String> httpEntity = new HttpEntity<>(httpHeaders);
+
+        String singleGame = String.join("?", STATISTICS_URI, "game_ids[]=" + gameId);
+
+        ResponseEntity<DataPlayers> response = restTemplate.exchange(singleGame, HttpMethod.GET, httpEntity, DataPlayers.class);
+        return Objects.requireNonNull(response.getBody()).getPlayers();
     }
 }
