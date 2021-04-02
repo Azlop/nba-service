@@ -20,18 +20,24 @@ public class GameServiceImpl implements GameService {
     @Autowired
     private final NbaService nbaService;
 
-    private GameRepository gameRepository;
-    private CommentRepository commentRepository;
+    @Autowired
+    private final GameRepository gameRepository;
 
     @Autowired
-    public GameServiceImpl(NbaService nbaService) {
+    private final CommentRepository commentRepository;
+
+    @Autowired
+    public GameServiceImpl(NbaService nbaService, GameRepository gameRepository, CommentRepository commentRepository) {
         this.nbaService = nbaService;
+        this.gameRepository = gameRepository;
+        this.commentRepository = commentRepository;
     }
 
     @Override
     public Game fetchGame(int gameId) {
         com.carta.nbaservice.entities.Game game = nbaService.getGame(gameId);
-        List<Player> playersDtos = fetchPlayersPoints(gameId);
+        List<Player> players = fetchPlayersPoints(gameId);
+        List<Comment> comments = fetchComments(gameId);
         Game gameDto = new Game();
         gameDto.setGameId(game.getId());
         gameDto.setDate(game.getDate());
@@ -39,7 +45,8 @@ public class GameServiceImpl implements GameService {
         gameDto.setAwayTeamName(game.getVisitorTeam().getName());
         gameDto.setHomeTeamScore(game.getHomeTeamScore());
         gameDto.setAwayTeamScore(game.getVisitorTeamScore());
-        gameDto.setPlayers(playersDtos);
+        gameDto.setPlayers(players);
+        gameDto.setComments(comments);
         return gameDto;
     }
 
@@ -84,12 +91,20 @@ public class GameServiceImpl implements GameService {
     }
 
     private void verifyGameId(int gameId) {
-        gameRepository.findById(gameId).orElseThrow(() ->
-                new NoSuchElementException("Game ID does not exist: " + gameId));
+        com.carta.nbaservice.entities.Game game = nbaService.getGame(gameId);
+        if (game == null) {
+            throw new NoSuchElementException("Game ID does not exist: " + gameId);
+        }
+//        gameRepository.findById(gameId).orElseThrow(() ->
+//                new NoSuchElementException("Game ID does not exist: " + gameId);
     }
 
     private List<Player> fetchPlayersPoints(int gameId) {
         List<com.carta.nbaservice.entities.Player> players = nbaService.getPlayersFromGame(gameId);
+        return Collections.emptyList();
+    }
+
+    private List<Comment> fetchComments(int gameId) {
         return Collections.emptyList();
     }
 }
