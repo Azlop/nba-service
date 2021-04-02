@@ -32,7 +32,7 @@ public class GameController {
     }
 
     @GetMapping
-    public List<GameDto> getAllGames(@RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
-        return Collections.emptyList();
+    public List<GameDto> getAllGamesByDate(@RequestParam(name = "date") @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
+        return gameService.listGames(date.toString());
     }
 }

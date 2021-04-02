@@ -6,9 +6,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +38,8 @@ class GameControllerTest {
     public static final String AWAY_TEAM_NAME = "Warriors";
     public static final int HOME_TEAM_SCORE = 100;
     public static final int AWAY_TEAM_SCORE = 90;
-    private static final String COMMENT_TIMESTAMP = "2021-03-28T11:00:00.000+00:00";
+    private static final String COMMENT_TIMESTAMP = "2021-03-28T00:00:00.000+00:00";
+    private final List<GameDto> games = new ArrayList<>();
 
     @Autowired
     private MockMvc mockMvc;
@@ -45,9 +47,8 @@ class GameControllerTest {
     @MockBean
     private GameService gameService;
 
-
     @Test
-    public void givenGameId_whenGettingGame_thenShouldReturnGameInfo() throws Exception {
+    void givenGameId_whenGettingGame_thenShouldReturnGameInfo() throws Exception {
         GameDto gameDto = createGame();
 
         given(gameService.fetchGame(GAME_ID)).willReturn(gameDto);
@@ -70,11 +71,23 @@ class GameControllerTest {
                 .andExpect(jsonPath("$.players[0].points").value(PLAYER_POINTS));
     }
 
+    @Test
+    void givenDate_whenGettingGames_thenShouldReturnGameInfoByDateGiven() throws Exception {
+        games.add(createGame());
+
+        given(gameService.listGames(GAME_DATE)).willReturn(games);
+
+        mockMvc.perform(get("/games")
+                        .param("date", GAME_DATE)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
     private GameDto createGame() {
         CommentDto commentDto = new CommentDto();
         commentDto.setCommentId(COMMENT_ID);
         commentDto.setText(COMMENT_TEXT);
-        commentDto.setTimestamp(Timestamp.valueOf(LocalDateTime.of(2021, 3, 28, 12, 0)));
+        commentDto.setTimestamp(Timestamp.valueOf(LocalDateTime.of(2021, 3, 28, 0, 0)));
 
         PlayerDto playerDto = new PlayerDto();
         playerDto.setPlayerId(PLAYER_ID);

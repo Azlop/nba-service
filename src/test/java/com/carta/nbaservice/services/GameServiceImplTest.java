@@ -1,50 +1,63 @@
 package com.carta.nbaservice.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.when;
 
-import java.sql.Timestamp;
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import com.carta.nbaservice.dtos.CommentDto;
 import com.carta.nbaservice.dtos.GameDto;
-import com.carta.nbaservice.dtos.PlayerDto;
-import com.carta.nbaservice.repos.GameRepository;
+import com.carta.nbaservice.entities.Game;
+import com.carta.nbaservice.entities.Team;
 
 @ExtendWith(SpringExtension.class)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class GameServiceImplTest {
 
     public static final int GAME_ID = 1;
+    private static final String GAME_DATE = "2021-03-28";
 
-    private GameService gameService;
+    @Mock
+    private NbaService nbaService;
 
-    @MockBean
-    private GameRepository gameRepository;
+    @InjectMocks
+    private GameServiceImpl gameServiceImpl;
 
-    @BeforeAll
-    void setUp() {
-        CommentDto commentDto = new CommentDto("Good game", new Timestamp(System.currentTimeMillis()));
-        PlayerDto playerDto = new PlayerDto("LeBron", "James", 23);
-        GameDto gameDto = new GameDto(GAME_ID, "2021-03-28", "Suns", "Warriors",
-                102, 120, Collections.singletonList(commentDto), Collections.singletonList(playerDto));
-        Mockito.when(gameRepository.save(gameDto)).thenReturn(gameDto);
+    @Test
+    public void givenGameId_whenGettingGameInfo_thenGameIsFound() {
+        when(nbaService.getGame(GAME_ID)).thenReturn(getDummyGame());
+
+        GameDto game = gameServiceImpl.fetchGame(GAME_ID);
+
+        assertThat(game.getGameId()).isEqualTo(GAME_ID);
     }
 
     @Test
-    @Disabled
-    void givenOneGame_whenSavingGame_thenGameIsFound() {
-        GameDto game = gameService.fetchGame(GAME_ID);
+    public void givenDate_whenGettingGames_thenShouldReturnGamesForDate() {
+        List<Game> games = new ArrayList<>();
+        games.add(getDummyGame());
+        games.add(getDummyGame());
+        games.add(getDummyGame());
 
-        assertThat(game.getGameId()).isEqualTo(GAME_ID);
+        when(nbaService.getAllGamesForDate(GAME_DATE)).thenReturn(games);
+
+        List<GameDto> gameDtos = gameServiceImpl.listGames(GAME_DATE);
+
+        assertNotNull(gameDtos);
+        assertEquals(3, gameDtos.size());
+    }
+
+    private Game getDummyGame() {
+        Team homeTeam = new Team(1, "ht1", "home", "", "north", "hometeam1", "hometeam1");
+        Team visitorTeam = new Team(2, "vt2", "away", "", "south", "visitorTeam2", "visitorTeam2");
+        return new Game(GAME_ID, "2021-03-28", homeTeam, 100, 1, false,
+                2021, "final", "", visitorTeam, 90);
     }
 }
