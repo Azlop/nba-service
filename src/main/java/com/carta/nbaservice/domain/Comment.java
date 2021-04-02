@@ -29,7 +29,7 @@ public class Comment {
         setTimestamp();
     }
 
-    public Comment() {}
+    protected Comment() {}
 
     public Integer getCommentId() {
         return commentId;

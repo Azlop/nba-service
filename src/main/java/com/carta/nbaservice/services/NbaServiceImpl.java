@@ -16,6 +16,7 @@ import com.carta.nbaservice.entities.DataGames;
 import com.carta.nbaservice.entities.DataPlayers;
 import com.carta.nbaservice.entities.Game;
 import com.carta.nbaservice.entities.Player;
+import com.carta.nbaservice.handler.RestTemplateResponseErrorHandler;
 
 @Service
 public class NbaServiceImpl implements NbaService {
@@ -31,8 +32,9 @@ public class NbaServiceImpl implements NbaService {
     private final RestTemplate restTemplate;
 
     @Autowired
-    public NbaServiceImpl(RestTemplateBuilder builder) {
-        this.restTemplate = builder.build();
+    public NbaServiceImpl(RestTemplateBuilder restTemplateBuilder) {
+        this.restTemplate = restTemplateBuilder.errorHandler(new RestTemplateResponseErrorHandler())
+                                    .build();
     }
 
     @Override

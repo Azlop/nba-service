@@ -3,19 +3,20 @@ package com.carta.nbaservice.services;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import com.carta.nbaservice.domain.Comment;
 import com.carta.nbaservice.domain.Game;
 import com.carta.nbaservice.entities.Team;
 import com.carta.nbaservice.repos.CommentRepository;
@@ -26,6 +27,7 @@ class GameServiceImplTest {
 
     public static final int GAME_ID = 1;
     private static final String GAME_DATE = "2021-03-28";
+    public static final String COMMENT_TEXT = "some comment";
 
     @Mock
     private NbaService nbaService;
@@ -33,10 +35,10 @@ class GameServiceImplTest {
     @InjectMocks
     private GameServiceImpl gameServiceImpl;
 
-    @MockBean
+    @Mock
     private GameRepository gameRepository;
 
-    @MockBean
+    @Mock
     private CommentRepository commentRepository;
 
     @Test
@@ -65,9 +67,20 @@ class GameServiceImplTest {
 
     @Test
     void givenValidGameIdAndCommentText_whenAddingComment_thenShouldFindComment() {
-        String commentText = "some comment";
-        Optional<Game> game = gameRepository.findById(GAME_ID);
-        assertNotNull(game);
+        Comment comment = new Comment(GAME_ID, COMMENT_TEXT);
+
+        when(nbaService.getGame(GAME_ID)).thenReturn(createDummyGameBasedOnFreeNBA());
+        when(commentRepository.save(any(Comment.class))).thenReturn(comment);
+
+        Comment commentResult = gameServiceImpl.addCommentToGame(GAME_ID, COMMENT_TEXT);
+
+        assertNotNull(commentResult);
+    }
+
+    @Test
+    @Disabled("not implemented yet")
+    void givenInvalidGameId_whenAddingComment_thenNotFoundIsThrown() {
+
     }
 
     private com.carta.nbaservice.entities.Game createDummyGameBasedOnFreeNBA() {

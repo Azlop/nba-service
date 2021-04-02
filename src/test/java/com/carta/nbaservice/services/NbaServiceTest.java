@@ -4,12 +4,15 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.web.client.HttpClientErrorException;
 
 import com.carta.nbaservice.entities.Game;
 import com.carta.nbaservice.entities.Player;
@@ -34,6 +37,18 @@ class NbaServiceTest {
         assertEquals("Final", game.getStatus());
         assertEquals("", game.getTime());
         assertEquals(122, game.getVisitorTeamScore());
+    }
+
+    @Test
+    void givenInvalidGameId_whenGettingGame_thenShouldReturnNotFound() {
+        int gameId = Integer.MAX_VALUE;
+
+        Exception exception = assertThrows(HttpClientErrorException.class, () -> nbaService.getGame(gameId));
+
+        String expectedMessage = "Game ID not found";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
     }
 
     @Test
