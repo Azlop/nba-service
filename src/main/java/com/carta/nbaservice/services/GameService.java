@@ -2,10 +2,10 @@ package com.carta.nbaservice.services;
 
 import java.util.List;
 
-import com.carta.nbaservice.dtos.GameDto;
+import com.carta.nbaservice.domain.Game;
 
 public interface GameService {
-    GameDto fetchGame(int gameId);
-    GameDto createGame(GameDto gameDto);
-    List<GameDto> listGames(String date);
+    Game fetchGame(int gameId);
+    List<Game> listGames(String date);
+    void createComment(int gameId, String commentText);
 }

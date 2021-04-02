@@ -1,4 +1,4 @@
-package com.carta.nbaservice.dtos;
+package com.carta.nbaservice.domain;
 
 import java.util.Objects;
 
@@ -10,7 +10,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "player")
-public class PlayerDto {
+public class Player {
 
     @Id
     @GeneratedValue
@@ -22,13 +22,13 @@ public class PlayerDto {
     @Column
     private int points;
 
-    public PlayerDto(String firstName, String lastName, int points) {
+    public Player(String firstName, String lastName, int points) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.points = points;
     }
 
-    public PlayerDto() {}
+    public Player() {}
 
     public Integer getPlayerId() {
         return playerId;
@@ -68,9 +68,9 @@ public class PlayerDto {
             return true;
         if (o == null || getClass() != o.getClass())
             return false;
-        PlayerDto playerDto = (PlayerDto) o;
-        return points == playerDto.points && Objects.equals(playerId, playerDto.playerId) && Objects.equals(firstName, playerDto.firstName) && Objects
-                .equals(lastName, playerDto.lastName);
+        Player player = (Player) o;
+        return points == player.points && Objects.equals(playerId, player.playerId) && Objects.equals(firstName, player.firstName) && Objects
+                .equals(lastName, player.lastName);
     }
 
     @Override

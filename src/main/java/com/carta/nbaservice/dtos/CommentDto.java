@@ -1,38 +1,17 @@
 package com.carta.nbaservice.dtos;
 
-import java.sql.Timestamp;
+import java.io.Serializable;
+import java.util.Objects;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+public class CommentDto implements Serializable {
+    private static final long serialVersionUID = 5626606978304933003L;
 
-@Entity
-@Table(name = "comment")
-public class CommentDto {
-
-    @Id
-    @GeneratedValue
-    private Integer commentId;
-    @Column
     private String text;
-    @Column
-    private Timestamp timestamp;
-
-    public CommentDto(String text, Timestamp timestamp) {
-        this.text = text;
-        this.timestamp = timestamp;
-    }
 
     public CommentDto() {}
 
-    public Integer getCommentId() {
-        return commentId;
-    }
-
-    public void setCommentId(Integer commentId) {
-        this.commentId = commentId;
+    public CommentDto(String text) {
+        this.text = text;
     }
 
     public String getText() {
@@ -43,11 +22,18 @@ public class CommentDto {
         this.text = text;
     }
 
-    public Timestamp getTimestamp() {
-        return timestamp;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        CommentDto that = (CommentDto) o;
+        return Objects.equals(text, that.text);
     }
 
-    public void setTimestamp(Timestamp timestamp) {
-        this.timestamp = timestamp;
+    @Override
+    public int hashCode() {
+        return Objects.hash(text);
     }
 }

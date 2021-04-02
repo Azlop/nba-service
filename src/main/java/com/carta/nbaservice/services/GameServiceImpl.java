@@ -7,10 +7,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.carta.nbaservice.dtos.GameDto;
-import com.carta.nbaservice.dtos.PlayerDto;
-import com.carta.nbaservice.entities.Game;
-import com.carta.nbaservice.entities.Player;
+import com.carta.nbaservice.domain.Game;
+import com.carta.nbaservice.domain.Player;
+import com.carta.nbaservice.repos.CommentRepository;
 
 @Service
 public class GameServiceImpl implements GameService {
@@ -18,16 +17,18 @@ public class GameServiceImpl implements GameService {
     @Autowired
     private NbaService nbaService;
 
+    private CommentRepository commentRepository;
+
     @Autowired
     public GameServiceImpl(NbaService nbaService) {
         this.nbaService = nbaService;
     }
 
     @Override
-    public GameDto fetchGame(int gameId) {
-        Game game = nbaService.getGame(gameId);
-        List<PlayerDto> playersDtos = fetchPlayersPoints(gameId);
-        GameDto gameDto = new GameDto();
+    public Game fetchGame(int gameId) {
+        com.carta.nbaservice.entities.Game game = nbaService.getGame(gameId);
+        List<Player> playersDtos = fetchPlayersPoints(gameId);
+        Game gameDto = new Game();
         gameDto.setGameId(game.getId());
         gameDto.setDate(game.getDate());
         gameDto.setHomeTeamName(game.getHomeTeam().getName());
@@ -39,17 +40,12 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public GameDto createGame(GameDto gameDto) {
-        return null;
-    }
+    public List<Game> listGames(String date) {
+        List<com.carta.nbaservice.entities.Game> games = nbaService.getAllGamesForDate(date);
+        List<Game> gameDtos = new ArrayList<>();
 
-    @Override
-    public List<GameDto> listGames(String date) {
-        List<Game> games = nbaService.getAllGamesForDate(date);
-        List<GameDto> gameDtos = new ArrayList<>();
-
-        for (Game game : games) {
-            GameDto gameDto = new GameDto();
+        for (com.carta.nbaservice.entities.Game game : games) {
+            Game gameDto = new Game();
             gameDto.setGameId(game.getId());
             gameDto.setDate(game.getDate());
             gameDto.setHomeTeamName(game.getHomeTeam().getName());
@@ -64,8 +60,12 @@ public class GameServiceImpl implements GameService {
         return gameDtos;
     }
 
-    private List<PlayerDto> fetchPlayersPoints(int gameId) {
-        List<Player> playerDtos = nbaService.getPlayersFromGame(gameId);
+    @Override
+    public void createComment(int gameId, String commentText) {
+    }
+
+    private List<Player> fetchPlayersPoints(int gameId) {
+        List<com.carta.nbaservice.entities.Player> players = nbaService.getPlayersFromGame(gameId);
         return Collections.emptyList();
     }
 }

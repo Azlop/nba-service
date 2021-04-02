@@ -1,4 +1,4 @@
-package com.carta.nbaservice.dtos;
+package com.carta.nbaservice.domain;
 
 import java.util.List;
 import java.util.Objects;
@@ -12,7 +12,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "game")
-public class GameDto {
+public class Game {
 
     @Id
     private Integer gameId;
@@ -28,12 +28,12 @@ public class GameDto {
     private int awayTeamScore;
 
     @OneToMany(cascade = { CascadeType.ALL })
-    private List<CommentDto> comments;
+    private List<Comment> comments;
     @OneToMany(cascade = { CascadeType.ALL })
-    private List<PlayerDto> players;
+    private List<Player> players;
 
-    public GameDto(Integer gameId, String date, String homeTeamName, String awayTeamName, int homeTeamScore, int awayTeamScore, List<CommentDto> comments,
-            List<PlayerDto> players) {
+    public Game(Integer gameId, String date, String homeTeamName, String awayTeamName, int homeTeamScore, int awayTeamScore, List<Comment> comments,
+            List<Player> players) {
         this.gameId = gameId;
         this.date = date;
         this.homeTeamName = homeTeamName;
@@ -44,7 +44,7 @@ public class GameDto {
         this.players = players;
     }
 
-    public GameDto() {}
+    public Game() {}
 
     public Integer getGameId() {
         return gameId;
@@ -94,19 +94,19 @@ public class GameDto {
         this.awayTeamScore = awayTeamScore;
     }
 
-    public List<CommentDto> getComments() {
+    public List<Comment> getComments() {
         return comments;
     }
 
-    public void setComments(List<CommentDto> comments) {
+    public void setComments(List<Comment> comments) {
         this.comments = comments;
     }
 
-    public List<PlayerDto> getPlayers() {
+    public List<Player> getPlayers() {
         return players;
     }
 
-    public void setPlayers(List<PlayerDto> players) {
+    public void setPlayers(List<Player> players) {
         this.players = players;
     }
 
@@ -116,10 +116,10 @@ public class GameDto {
             return true;
         if (o == null || getClass() != o.getClass())
             return false;
-        GameDto gameDto = (GameDto) o;
-        return homeTeamScore == gameDto.homeTeamScore && awayTeamScore == gameDto.awayTeamScore && Objects.equals(gameId, gameDto.gameId) && Objects
-                .equals(date, gameDto.date) && Objects.equals(homeTeamName, gameDto.homeTeamName) && Objects.equals(awayTeamName, gameDto.awayTeamName)
-                && Objects.equals(comments, gameDto.comments) && Objects.equals(players, gameDto.players);
+        Game game = (Game) o;
+        return homeTeamScore == game.homeTeamScore && awayTeamScore == game.awayTeamScore && Objects.equals(gameId, game.gameId) && Objects
+                .equals(date, game.date) && Objects.equals(homeTeamName, game.homeTeamName) && Objects.equals(awayTeamName, game.awayTeamName)
+                && Objects.equals(comments, game.comments) && Objects.equals(players, game.players);
     }
 
     @Override
