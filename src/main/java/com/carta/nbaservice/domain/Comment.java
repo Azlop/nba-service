@@ -1,6 +1,7 @@
 package com.carta.nbaservice.domain;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -22,10 +23,10 @@ public class Comment {
     @Column
     private Timestamp timestamp;
 
-    public Comment(Integer gameId, String text, Timestamp timestamp) {
+    public Comment(Integer gameId, String text) {
         this.gameId = gameId;
         this.text = text;
-        this.timestamp = timestamp;
+        setTimestamp();
     }
 
     public Comment() {}
@@ -50,8 +51,8 @@ public class Comment {
         return timestamp;
     }
 
-    public void setTimestamp(Timestamp timestamp) {
-        this.timestamp = timestamp;
+    private void setTimestamp() {
+        this.timestamp = Timestamp.valueOf(LocalDateTime.now());
     }
 
     public Integer getGameId() {

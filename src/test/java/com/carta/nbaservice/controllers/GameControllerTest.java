@@ -5,6 +5,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -67,7 +68,7 @@ class GameControllerTest {
                 .andExpect(jsonPath("$.awayTeamScore").value(AWAY_TEAM_SCORE))
                 .andExpect(jsonPath("$.comments[0].commentId").value(COMMENT_ID))
                 .andExpect(jsonPath("$.comments[0].text").value(COMMENT_TEXT))
-                .andExpect(jsonPath("$.comments[0].timestamp").value(COMMENT_TIMESTAMP))
+                .andExpect(jsonPath("$.comments[0].timestamp").isNotEmpty())
                 .andExpect(jsonPath("$.players[0].playerId").value(PLAYER_ID))
                 .andExpect(jsonPath("$.players[0].firstName").value(PLAYER_FIRST_NAME))
                 .andExpect(jsonPath("$.players[0].lastName").value(PLAYER_LAST_NAME))
@@ -87,20 +88,28 @@ class GameControllerTest {
     }
 
     @Test
-    void givenCommentOnExistingGame_whenPostingComment_thenShould() throws Exception {
+    void givenCommentOnExistingGame_whenPostingComment_thenCommentIsCreated() throws Exception {
         mockMvc.perform(post("/games/" + GAME_ID + "/comments")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"text\":\"" + COMMENT_TEXT + "\"}"))
                 .andExpect(status().isCreated());
 
-        verify(gameService, times(1)).createComment(GAME_ID, COMMENT_TEXT);
+        verify(gameService, times(1)).addCommentToGame(GAME_ID, COMMENT_TEXT);
+    }
+
+    @Test
+    void givenComment_whenUpdatingComment_thenCommentIsUpdated() throws Exception {
+        mockMvc.perform(put("/games/" + GAME_ID + "/comments")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"text\":\"" + COMMENT_TEXT + "\"}"))
+                .andExpect(status().isOk());
+
+        verify(gameService, times(1)).modifyCommentOnGame(COMMENT_ID, COMMENT_TEXT);
     }
 
     private Game createGame() {
-        Comment comment = new Comment();
+        Comment comment = new Comment(GAME_ID, COMMENT_TEXT);
         comment.setCommentId(COMMENT_ID);
-        comment.setText(COMMENT_TEXT);
-        comment.setTimestamp(Timestamp.valueOf(LocalDateTime.of(2021, 3, 28, 0, 0)));
 
         Player player = new Player();
         player.setPlayerId(PLAYER_ID);

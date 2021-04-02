@@ -3,20 +3,24 @@ package com.carta.nbaservice.services;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.carta.nbaservice.domain.Comment;
 import com.carta.nbaservice.domain.Game;
 import com.carta.nbaservice.domain.Player;
 import com.carta.nbaservice.repos.CommentRepository;
+import com.carta.nbaservice.repos.GameRepository;
 
 @Service
 public class GameServiceImpl implements GameService {
 
     @Autowired
-    private NbaService nbaService;
+    private final NbaService nbaService;
 
+    private GameRepository gameRepository;
     private CommentRepository commentRepository;
 
     @Autowired
@@ -61,7 +65,27 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public void createComment(int gameId, String commentText) {
+    public Comment addCommentToGame(int gameId, String commentText) {
+        verifyGameId(gameId);
+        Comment comment = new Comment(gameId, commentText);
+        return commentRepository.save(comment);
+    }
+
+    @Override
+    public Comment modifyCommentOnGame(int commentId, String commentText) {
+        Comment comment = verifyCommentId(commentId);
+        comment.setText(commentText);
+        return commentRepository.save(comment);
+    }
+
+    private Comment verifyCommentId(int commentId) {
+        return commentRepository.findById(commentId).orElseThrow(() ->
+                new NoSuchElementException("Comment ID does not exist: " + commentId));
+    }
+
+    private void verifyGameId(int gameId) {
+        gameRepository.findById(gameId).orElseThrow(() ->
+                new NoSuchElementException("Game ID does not exist: " + gameId));
     }
 
     private List<Player> fetchPlayersPoints(int gameId) {
