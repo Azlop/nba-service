@@ -18,7 +18,7 @@ import com.carta.nbaservice.entities.Game;
 import com.carta.nbaservice.entities.Player;
 
 @SpringBootTest
-class NbaServiceTest {
+class NbaServiceImplTest {
 
     @Autowired
     private NbaService nbaService;

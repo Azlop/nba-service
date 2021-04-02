@@ -30,51 +30,35 @@ public class NbaServiceImpl implements NbaService {
     private final String HEADER_HOST = "x-rapidapi-host";
 
     private final RestTemplate restTemplate;
+    private final HttpEntity<String> httpEntity;
 
     @Autowired
     public NbaServiceImpl(RestTemplateBuilder restTemplateBuilder) {
-        this.restTemplate = restTemplateBuilder.errorHandler(new RestTemplateResponseErrorHandler())
-                                    .build();
+        this.restTemplate = restTemplateBuilder.errorHandler(new RestTemplateResponseErrorHandler()).build();
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.set(HEADER_KEY, KEY);
+        httpHeaders.set(HEADER_HOST, HOST);
+        this.httpEntity = new HttpEntity<>(httpHeaders);
     }
 
     @Override
     public List<Game> getAllGamesForDate(String date) {
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.set(HEADER_KEY, KEY);
-        httpHeaders.set(HEADER_HOST, HOST);
-
-        HttpEntity<String> httpEntity = new HttpEntity<>(httpHeaders);
-
         String gamesForDate = String.join("?", GAMES_URI, "dates[]=\"" + date + "\"");
-        ResponseEntity<DataGames> response = restTemplate.exchange(gamesForDate, HttpMethod.GET, httpEntity, DataGames.class);
+        ResponseEntity<DataGames> response = this.restTemplate.exchange(gamesForDate, HttpMethod.GET, this.httpEntity, DataGames.class);
         return Objects.requireNonNull(response.getBody()).getGames();
     }
 
     @Override
     public Game getGame(Integer gameId) {
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.set(HEADER_KEY, KEY);
-        httpHeaders.set(HEADER_HOST, HOST);
-
-        HttpEntity<String> httpEntity = new HttpEntity<>(httpHeaders);
-
         String singleGame = String.join("/", GAMES_URI, gameId.toString());
-
-        ResponseEntity<Game> response = restTemplate.exchange(singleGame, HttpMethod.GET, httpEntity, Game.class);
+        ResponseEntity<Game> response = this.restTemplate.exchange(singleGame, HttpMethod.GET, this.httpEntity, Game.class);
         return response.getBody();
     }
 
     @Override
     public List<Player> getPlayersFromGame(long gameId) {
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.set(HEADER_KEY, KEY);
-        httpHeaders.set(HEADER_HOST, HOST);
-
-        HttpEntity<String> httpEntity = new HttpEntity<>(httpHeaders);
-
         String singleGame = String.join("?", STATISTICS_URI, "game_ids[]=" + gameId);
-
-        ResponseEntity<DataPlayers> response = restTemplate.exchange(singleGame, HttpMethod.GET, httpEntity, DataPlayers.class);
+        ResponseEntity<DataPlayers> response = this.restTemplate.exchange(singleGame, HttpMethod.GET, this.httpEntity, DataPlayers.class);
         return Objects.requireNonNull(response.getBody()).getPlayers();
     }
 }
