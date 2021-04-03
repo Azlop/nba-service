@@ -5,58 +5,29 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class Player {
 
     private Integer id;
-    private int ast;
-    private int blk;
-    private int dreb;
-    @JsonProperty("fg3_pc")
-    private double fg3Pc;
-    private int fg3a;
-    private int fg3m;
-    @JsonProperty("fg_pct")
-    private double fgPct;
-    private int fga;
-    private int fgm;
-    @JsonProperty("ft_pct")
-    private double ftPct;
-    private int fta;
-    private int ftm;
-    private Game game;
-    private String min;
-    private int oreb;
-    private int pf;
-    private Player player;
-    private int pts;
-    private int reb;
-    private int stl;
-    private Team team;
-    private int turnover;
+    @JsonProperty("first_name")
+    private String firstName;
+    @JsonProperty("height_feet")
+    private int heightFeet;
+    @JsonProperty("height_inches")
+    private int heightInches;
+    @JsonProperty("last_name")
+    private String lastName;
+    private String position;
+    @JsonProperty("team_id")
+    private int teamId;
+    @JsonProperty("weight_pounds")
+    private int weightPounds;
 
-    public Player(Integer id, int ast, int blk, int dreb, double fg3Pc, int fg3a, int fg3m, double fgPct, int fga, int fgm, double ftPct, int ftm, int fta,
-            int ftm1, Game game, String min, int oreb, int pf, Player player, int pts, int reb, int stl, Team team, int turnover) {
+    public Player(Integer id, String firstName, int heightFeet, int heightInches, String lastName, String position, int teamId, int weightPounds) {
         this.id = id;
-        this.ast = ast;
-        this.blk = blk;
-        this.dreb = dreb;
-        this.fg3Pc = fg3Pc;
-        this.fg3a = fg3a;
-        this.fg3m = fg3m;
-        this.fgPct = fgPct;
-        this.fga = fga;
-        this.fgm = fgm;
-        this.ftPct = ftPct;
-        this.ftm = ftm;
-        this.fta = fta;
-        this.ftm = ftm1;
-        this.game = game;
-        this.min = min;
-        this.oreb = oreb;
-        this.pf = pf;
-        this.player = player;
-        this.pts = pts;
-        this.reb = reb;
-        this.stl = stl;
-        this.team = team;
-        this.turnover = turnover;
+        this.firstName = firstName;
+        this.heightFeet = heightFeet;
+        this.heightInches = heightInches;
+        this.lastName = lastName;
+        this.position = position;
+        this.teamId = teamId;
+        this.weightPounds = weightPounds;
     }
 
     public Integer getId() {
@@ -67,179 +38,59 @@ public class Player {
         this.id = id;
     }
 
-    public int getAst() {
-        return ast;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setAst(int ast) {
-        this.ast = ast;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public int getBlk() {
-        return blk;
+    public int getHeightFeet() {
+        return heightFeet;
     }
 
-    public void setBlk(int blk) {
-        this.blk = blk;
+    public void setHeightFeet(int heightFeet) {
+        this.heightFeet = heightFeet;
     }
 
-    public int getDreb() {
-        return dreb;
+    public int getHeightInches() {
+        return heightInches;
     }
 
-    public void setDreb(int dreb) {
-        this.dreb = dreb;
+    public void setHeightInches(int heightInches) {
+        this.heightInches = heightInches;
     }
 
-    public double getFg3Pc() {
-        return fg3Pc;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setFg3Pc(double fg3Pc) {
-        this.fg3Pc = fg3Pc;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
-    public int getFg3a() {
-        return fg3a;
+    public String getPosition() {
+        return position;
     }
 
-    public void setFg3a(int fg3a) {
-        this.fg3a = fg3a;
+    public void setPosition(String position) {
+        this.position = position;
     }
 
-    public int getFg3m() {
-        return fg3m;
+    public int getTeamId() {
+        return teamId;
     }
 
-    public void setFg3m(int fg3m) {
-        this.fg3m = fg3m;
+    public void setTeamId(int teamId) {
+        this.teamId = teamId;
     }
 
-    public double getFgPct() {
-        return fgPct;
+    public int getWeightPounds() {
+        return weightPounds;
     }
 
-    public void setFgPct(double fgPct) {
-        this.fgPct = fgPct;
-    }
-
-    public int getFga() {
-        return fga;
-    }
-
-    public void setFga(int fga) {
-        this.fga = fga;
-    }
-
-    public int getFgm() {
-        return fgm;
-    }
-
-    public void setFgm(int fgm) {
-        this.fgm = fgm;
-    }
-
-    public double getFtPct() {
-        return ftPct;
-    }
-
-    public void setFtPct(double ftPct) {
-        this.ftPct = ftPct;
-    }
-
-    public int getFtm() {
-        return ftm;
-    }
-
-    public void setFtm(int ftm) {
-        this.ftm = ftm;
-    }
-
-    public Game getGame() {
-        return game;
-    }
-
-    public void setGame(Game game) {
-        this.game = game;
-    }
-
-    public String getMin() {
-        return min;
-    }
-
-    public void setMin(String min) {
-        this.min = min;
-    }
-
-    public int getOreb() {
-        return oreb;
-    }
-
-    public void setOreb(int oreb) {
-        this.oreb = oreb;
-    }
-
-    public int getPf() {
-        return pf;
-    }
-
-    public void setPf(int pf) {
-        this.pf = pf;
-    }
-
-    public Player getPlayer() {
-        return player;
-    }
-
-    public void setPlayer(Player player) {
-        this.player = player;
-    }
-
-    public int getPts() {
-        return pts;
-    }
-
-    public void setPts(int pts) {
-        this.pts = pts;
-    }
-
-    public int getReb() {
-        return reb;
-    }
-
-    public void setReb(int reb) {
-        this.reb = reb;
-    }
-
-    public int getStl() {
-        return stl;
-    }
-
-    public void setStl(int stl) {
-        this.stl = stl;
-    }
-
-    public Team getTeam() {
-        return team;
-    }
-
-    public void setTeam(Team team) {
-        this.team = team;
-    }
-
-    public int getTurnover() {
-        return turnover;
-    }
-
-    public void setTurnover(int turnover) {
-        this.turnover = turnover;
-    }
-
-    public int getFta() {
-        return fta;
-    }
-
-    public void setFta(int fta) {
-        this.fta = fta;
+    public void setWeightPounds(int weightPounds) {
+        this.weightPounds = weightPounds;
     }
 }

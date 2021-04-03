@@ -16,6 +16,7 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import com.carta.nbaservice.entities.Game;
 import com.carta.nbaservice.entities.Player;
+import com.carta.nbaservice.entities.PlayerStatistics;
 
 @SpringBootTest
 class NbaServiceImplTest {
@@ -64,7 +65,7 @@ class NbaServiceImplTest {
     void givenGameId_whenGettingGameStatistics_thenShouldReturnPlayersStatisticsForGame() {
         Integer gameId = 264405;
 
-        List<Player> players = nbaService.getPlayersFromGame(gameId);
+        List<PlayerStatistics> players = nbaService.getPlayersFromGame(gameId);
 
         assertThat(players, hasSize(25));
     }

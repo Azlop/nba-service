@@ -32,7 +32,7 @@ public class GameController {
     @GetMapping(value = "/{gameId}")
     public Game getGame(@PathVariable(value = "gameId") int gameId) {
         LOGGER.info("Accessing GET Game endpoint for ID: {}", gameId);
-        return gameService.fetchGame(gameId);
+        return gameService.getGame(gameId);
     }
 
     @GetMapping

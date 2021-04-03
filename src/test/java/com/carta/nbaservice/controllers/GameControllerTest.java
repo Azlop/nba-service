@@ -1,7 +1,6 @@
 package com.carta.nbaservice.controllers;
 
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -9,8 +8,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -55,7 +52,7 @@ class GameControllerTest {
     void givenGameId_whenGettingGame_thenShouldReturnGameInfo() throws Exception {
         Game game = createGame();
 
-        given(gameService.fetchGame(GAME_ID)).willReturn(game);
+        given(gameService.getGame(GAME_ID)).willReturn(game);
 
         mockMvc.perform(get("/games/"+ GAME_ID)
                         .contentType(MediaType.APPLICATION_JSON))

@@ -7,20 +7,20 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class DataPlayers {
 
     @JsonProperty("data")
-    private List<Player> players;
+    private List<PlayerStatistics> players;
     @JsonProperty("meta")
     private Metadata metadata;
 
-    public DataPlayers(List<Player> players, Metadata metadata) {
+    public DataPlayers(List<PlayerStatistics> players, Metadata metadata) {
         this.players = players;
         this.metadata = metadata;
     }
 
-    public List<Player> getPlayers() {
+    public List<PlayerStatistics> getPlayers() {
         return players;
     }
 
-    public void setPlayers(List<Player> players) {
+    public void setPlayers(List<PlayerStatistics> players) {
         this.players = players;
     }
 

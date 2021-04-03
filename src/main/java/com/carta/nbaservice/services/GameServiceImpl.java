@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.carta.nbaservice.domain.Comment;
 import com.carta.nbaservice.domain.Game;
 import com.carta.nbaservice.domain.Player;
+import com.carta.nbaservice.entities.PlayerStatistics;
 import com.carta.nbaservice.repos.CommentRepository;
 import com.carta.nbaservice.repos.GameRepository;
 
@@ -38,20 +39,12 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public Game fetchGame(int gameId) {
+    public Game getGame(int gameId) {
         LOGGER.debug("Getting game for ID: {}", gameId);
         com.carta.nbaservice.entities.Game game = nbaService.getGame(gameId);
-        List<Player> players = fetchPlayersPoints(gameId);
+        List<Player> players = getPlayersPoints(gameId);
         List<Comment> comments = fetchComments(gameId);
-        Game gameDto = new Game();
-        gameDto.setGameId(game.getId());
-        gameDto.setDate(game.getDate());
-        gameDto.setHomeTeamName(game.getHomeTeam().getName());
-        gameDto.setAwayTeamName(game.getVisitorTeam().getName());
-        gameDto.setHomeTeamScore(game.getHomeTeamScore());
-        gameDto.setAwayTeamScore(game.getVisitorTeamScore());
-        gameDto.setPlayers(players);
-        gameDto.setComments(comments);
+        Game gameDto = createGame(game, players, comments);
         LOGGER.debug("Successfully got game");
         return gameDto;
     }
@@ -63,15 +56,7 @@ public class GameServiceImpl implements GameService {
         List<Game> gameDtos = new ArrayList<>();
 
         for (com.carta.nbaservice.entities.Game game : games) {
-            Game gameDto = new Game();
-            gameDto.setGameId(game.getId());
-            gameDto.setDate(game.getDate());
-            gameDto.setHomeTeamName(game.getHomeTeam().getName());
-            gameDto.setAwayTeamName(game.getVisitorTeam().getName());
-            gameDto.setHomeTeamScore(game.getHomeTeamScore());
-            gameDto.setAwayTeamScore(game.getVisitorTeamScore());
-            gameDto.setPlayers(Collections.emptyList());
-            gameDto.setComments(Collections.emptyList());
+            Game gameDto = createGame(game, Collections.emptyList(), Collections.emptyList());
             gameDtos.add(gameDto);
         }
 
@@ -88,14 +73,39 @@ public class GameServiceImpl implements GameService {
 //                new NoSuchElementException("Game ID does not exist: " + gameId);
     }
 
-    private List<Player> fetchPlayersPoints(int gameId) {
+    private List<Player> getPlayersPoints(int gameId) {
         LOGGER.debug("Getting players for game ID: {}", gameId);
-        List<com.carta.nbaservice.entities.Player> players = nbaService.getPlayersFromGame(gameId);
-        return Collections.emptyList();
+        List<PlayerStatistics> playerStatistics = nbaService.getPlayersFromGame(gameId);
+        List<Player> players = new ArrayList<>();
+
+        for (PlayerStatistics playerStatistic : playerStatistics) {
+            if (playerStatistic.getPts() > 0) {
+                Player player = new Player();
+                player.setFirstName(playerStatistic.getPlayer().getFirstName());
+                player.setLastName(playerStatistic.getPlayer().getLastName());
+                player.setPoints(playerStatistic.getPts());
+                players.add(player);
+            }
+        }
+
+        return players;
     }
 
     private List<Comment> fetchComments(int gameId) {
         LOGGER.debug("Getting comments for game ID: {}", gameId);
-        return Collections.emptyList();
+        return commentRepository.findByGameIdOrderByTimestampDesc(gameId);
+    }
+
+    private Game createGame(com.carta.nbaservice.entities.Game game, List<Player> players, List<Comment> comments) {
+        Game gameDto = new Game();
+        gameDto.setGameId(game.getId());
+        gameDto.setDate(game.getDate());
+        gameDto.setHomeTeamName(game.getHomeTeam().getName());
+        gameDto.setAwayTeamName(game.getVisitorTeam().getName());
+        gameDto.setHomeTeamScore(game.getHomeTeamScore());
+        gameDto.setAwayTeamScore(game.getVisitorTeamScore());
+        gameDto.setPlayers(players);
+        gameDto.setComments(comments);
+        return gameDto;
     }
 }

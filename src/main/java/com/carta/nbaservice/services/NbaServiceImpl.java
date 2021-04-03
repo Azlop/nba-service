@@ -18,6 +18,7 @@ import com.carta.nbaservice.entities.DataGames;
 import com.carta.nbaservice.entities.DataPlayers;
 import com.carta.nbaservice.entities.Game;
 import com.carta.nbaservice.entities.Player;
+import com.carta.nbaservice.entities.PlayerStatistics;
 import com.carta.nbaservice.handlers.RestTemplateResponseErrorHandler;
 
 @Service
@@ -62,7 +63,7 @@ public class NbaServiceImpl implements NbaService {
     }
 
     @Override
-    public List<Player> getPlayersFromGame(Integer gameId) {
+    public List<PlayerStatistics> getPlayersFromGame(Integer gameId) {
         LOGGER.debug("Getting players points for game ID: {}", gameId);
         String singleGame = String.join("?", STATISTICS_URI, "game_ids[]=" + gameId);
         ResponseEntity<DataPlayers> response = this.restTemplate.exchange(singleGame, HttpMethod.GET, this.httpEntity, DataPlayers.class);
