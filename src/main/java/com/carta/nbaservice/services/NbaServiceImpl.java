@@ -21,13 +21,13 @@ import com.carta.nbaservice.handler.RestTemplateResponseErrorHandler;
 @Service
 public class NbaServiceImpl implements NbaService {
 
-    private final String BASE_FREE_NBA_URL = "https://free-nba.p.rapidapi.com";
-    private final String GAMES_URI = BASE_FREE_NBA_URL + "/games";
-    private final String STATISTICS_URI = BASE_FREE_NBA_URL + "/stats";
-    private final String KEY = "587e392567msh1060feed2027cdbp1cd6a7jsn1633bc5de72c";
-    private final String HOST = "free-nba.p.rapidapi.com";
-    private final String HEADER_KEY = "x-rapidapi-key";
-    private final String HEADER_HOST = "x-rapidapi-host";
+    private static final String BASE_FREE_NBA_URL = "https://free-nba.p.rapidapi.com";
+    private static final String GAMES_URI = BASE_FREE_NBA_URL + "/games";
+    private static final String STATISTICS_URI = BASE_FREE_NBA_URL + "/stats";
+    private static final String KEY = "587e392567msh1060feed2027cdbp1cd6a7jsn1633bc5de72c";
+    private static final String HOST = "free-nba.p.rapidapi.com";
+    private static final String HEADER_KEY = "x-rapidapi-key";
+    private static final String HEADER_HOST = "x-rapidapi-host";
 
     private final RestTemplate restTemplate;
     private final HttpEntity<String> httpEntity;
