@@ -87,26 +87,6 @@ class GameControllerTest {
                 .andExpect(status().isOk());
     }
 
-    @Test
-    void givenCommentOnExistingGame_whenPostingComment_thenCommentIsCreated() throws Exception {
-        mockMvc.perform(post("/games/" + GAME_ID + "/comments")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"text\":\"" + COMMENT_TEXT + "\"}"))
-                .andExpect(status().isCreated());
-
-        verify(gameService, times(1)).addCommentToGame(GAME_ID, COMMENT_TEXT);
-    }
-
-    @Test
-    void givenComment_whenUpdatingComment_thenCommentIsUpdated() throws Exception {
-        mockMvc.perform(put("/games/" + GAME_ID + "/comments")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"text\":\"" + COMMENT_TEXT + "\"}"))
-                .andExpect(status().isOk());
-
-        verify(gameService, times(1)).modifyCommentOnGame(COMMENT_ID, COMMENT_TEXT);
-    }
-
     private Game createGame() {
         Comment comment = new Comment(GAME_ID, COMMENT_TEXT);
         comment.setCommentId(COMMENT_ID);

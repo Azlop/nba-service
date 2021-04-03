@@ -15,15 +15,15 @@ public class Comment {
 
     @Id
     @GeneratedValue
-    private Integer commentId;
+    private long commentId;
     @Column
-    private Integer gameId;
+    private long gameId;
     @Column
     private String text;
     @Column
     private Timestamp timestamp;
 
-    public Comment(Integer gameId, String text) {
+    public Comment(long gameId, String text) {
         this.gameId = gameId;
         this.text = text;
         setTimestamp();
@@ -31,11 +31,11 @@ public class Comment {
 
     protected Comment() {}
 
-    public Integer getCommentId() {
+    public long getCommentId() {
         return commentId;
     }
 
-    public void setCommentId(Integer commentId) {
+    public void setCommentId(long commentId) {
         this.commentId = commentId;
     }
 
@@ -55,11 +55,11 @@ public class Comment {
         this.timestamp = Timestamp.valueOf(LocalDateTime.now());
     }
 
-    public Integer getGameId() {
+    public long getGameId() {
         return gameId;
     }
 
-    public void setGameId(Integer gameId) {
+    public void setGameId(long gameId) {
         this.gameId = gameId;
     }
 }

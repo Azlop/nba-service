@@ -6,11 +6,13 @@ import java.util.Objects;
 public class CommentDto implements Serializable {
     private static final long serialVersionUID = 5626606978304933003L;
 
+    private Integer gameId;
     private String text;
 
     public CommentDto() {}
 
-    public CommentDto(String text) {
+    public CommentDto(Integer gameId, String text) {
+        this.gameId = gameId;
         this.text = text;
     }
 
@@ -22,6 +24,14 @@ public class CommentDto implements Serializable {
         this.text = text;
     }
 
+    public Integer getGameId() {
+        return gameId;
+    }
+
+    public void setGameId(Integer gameId) {
+        this.gameId = gameId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o)
@@ -29,11 +39,11 @@ public class CommentDto implements Serializable {
         if (o == null || getClass() != o.getClass())
             return false;
         CommentDto that = (CommentDto) o;
-        return Objects.equals(text, that.text);
+        return Objects.equals(gameId, that.gameId) && Objects.equals(text, that.text);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(text);
+        return Objects.hash(gameId, text);
     }
 }

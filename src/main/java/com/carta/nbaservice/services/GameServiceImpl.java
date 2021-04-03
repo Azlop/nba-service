@@ -71,25 +71,6 @@ public class GameServiceImpl implements GameService {
         return gameDtos;
     }
 
-    @Override
-    public Comment addCommentToGame(int gameId, String commentText) {
-        verifyGameId(gameId);
-        Comment comment = new Comment(gameId, commentText);
-        return commentRepository.save(comment);
-    }
-
-    @Override
-    public Comment modifyCommentOnGame(int commentId, String commentText) {
-        Comment comment = verifyCommentId(commentId);
-        comment.setText(commentText);
-        return commentRepository.save(comment);
-    }
-
-    private Comment verifyCommentId(int commentId) {
-        return commentRepository.findById(commentId).orElseThrow(() ->
-                new NoSuchElementException("Comment ID does not exist: " + commentId));
-    }
-
     private void verifyGameId(int gameId) {
         com.carta.nbaservice.entities.Game game = nbaService.getGame(gameId);
         if (game == null) {
