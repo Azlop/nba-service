@@ -1,7 +1,6 @@
 package com.carta.nbaservice.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.when;
@@ -40,6 +39,7 @@ class GameServiceImplTest {
     void givenGameId_whenGettingGameInfo_thenGameIsFound() {
         List<PlayerStatistics> playerStatistics = new ArrayList<>();
         playerStatistics.add(createDummyPlayerStatisticsBasedOnFreeNBA());
+
         when(nbaService.getGame(GAME_ID)).thenReturn(createDummyGameBasedOnFreeNBA());
         when(nbaService.getPlayersFromGame(GAME_ID)).thenReturn(playerStatistics);
 

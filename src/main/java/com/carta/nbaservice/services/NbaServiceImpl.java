@@ -17,7 +17,6 @@ import org.springframework.web.client.RestTemplate;
 import com.carta.nbaservice.entities.DataGames;
 import com.carta.nbaservice.entities.DataPlayers;
 import com.carta.nbaservice.entities.Game;
-import com.carta.nbaservice.entities.Player;
 import com.carta.nbaservice.entities.PlayerStatistics;
 import com.carta.nbaservice.handlers.RestTemplateResponseErrorHandler;
 

@@ -56,7 +56,9 @@ public class GameServiceImpl implements GameService {
         List<Game> gameDtos = new ArrayList<>();
 
         for (com.carta.nbaservice.entities.Game game : games) {
-            Game gameDto = createGame(game, Collections.emptyList(), Collections.emptyList());
+            List<Player> players = getPlayersPoints(game.getId());
+            List<Comment> comments = fetchComments(game.getId());
+            Game gameDto = createGame(game, players, comments);
             gameDtos.add(gameDto);
         }
 
