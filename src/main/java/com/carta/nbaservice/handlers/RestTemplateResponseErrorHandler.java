@@ -1,4 +1,4 @@
-package com.carta.nbaservice.handler;
+package com.carta.nbaservice.handlers;
 
 import java.io.IOException;
 

@@ -40,7 +40,7 @@ class NbaServiceImplTest {
     }
 
     @Test
-    void givenInvalidGameId_whenGettingGame_thenShouldReturnNotFound() {
+    void givenNonExistingGameId_whenGettingGame_thenShouldReturnNotFound() {
         int gameId = Integer.MAX_VALUE;
 
         Exception exception = assertThrows(HttpClientErrorException.class, () -> nbaService.getGame(gameId));

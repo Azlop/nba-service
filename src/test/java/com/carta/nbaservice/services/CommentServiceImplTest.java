@@ -8,10 +8,8 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -52,12 +50,6 @@ class CommentServiceImplTest {
     }
 
     @Test
-    @Disabled("not implemented yet")
-    void givenInvalidGameId_whenAddingComment_thenNotFoundIsThrown() {
-
-    }
-
-    @Test
     void givenValidCommentId_whenDeletingComment_thenShouldFindAndDeleteComment() {
         Comment comment = new Comment(GAME_ID, COMMENT_TEXT);
         comment.setCommentId(COMMENT_ID);
@@ -70,7 +62,7 @@ class CommentServiceImplTest {
     }
 
     @Test
-    void givenInvalidCommentId_whenDeletingComment_thenThrowNoSuchElementException() {
+    void givenInvalidCommentId_whenDeletingComment_thenThrowCommentNotFoundException() {
         Comment comment = new Comment(GAME_ID, COMMENT_TEXT);
         comment.setCommentId(COMMENT_ID);
 

@@ -16,7 +16,7 @@ import com.carta.nbaservice.entities.DataGames;
 import com.carta.nbaservice.entities.DataPlayers;
 import com.carta.nbaservice.entities.Game;
 import com.carta.nbaservice.entities.Player;
-import com.carta.nbaservice.handler.RestTemplateResponseErrorHandler;
+import com.carta.nbaservice.handlers.RestTemplateResponseErrorHandler;
 
 @Service
 public class NbaServiceImpl implements NbaService {
