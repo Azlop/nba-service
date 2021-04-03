@@ -1,8 +1,15 @@
 package com.carta.nbaservice.services;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -13,6 +20,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.carta.nbaservice.domain.Comment;
 import com.carta.nbaservice.entities.Team;
+import com.carta.nbaservice.exceptions.CommentNotFoundException;
 import com.carta.nbaservice.repos.CommentRepository;
 
 @ExtendWith(SpringExtension.class)
@@ -20,6 +28,7 @@ class CommentServiceImplTest {
 
     public static final int GAME_ID = 1;
     public static final String COMMENT_TEXT = "some comment";
+    private static final Integer COMMENT_ID = 1;
 
     @Mock
     private NbaService nbaService;
@@ -46,6 +55,34 @@ class CommentServiceImplTest {
     @Disabled("not implemented yet")
     void givenInvalidGameId_whenAddingComment_thenNotFoundIsThrown() {
 
+    }
+
+    @Test
+    void givenValidCommentId_whenDeletingComment_thenShouldFindAndDeleteComment() {
+        Comment comment = new Comment(GAME_ID, COMMENT_TEXT);
+        comment.setCommentId(COMMENT_ID);
+
+        when(commentRepository.findById(comment.getCommentId())).thenReturn(Optional.of(comment));
+
+        commentServiceImpl.deleteComment(COMMENT_ID);
+
+        verify(commentRepository).deleteById(COMMENT_ID);
+    }
+
+    @Test
+    void givenInvalidCommentId_whenDeletingComment_thenThrowNoSuchElementException() {
+        Comment comment = new Comment(GAME_ID, COMMENT_TEXT);
+        comment.setCommentId(COMMENT_ID);
+
+        when(commentRepository.findById(anyInt())).thenReturn(Optional.empty());
+
+        Exception exception = assertThrows(CommentNotFoundException.class, () ->
+                commentServiceImpl.deleteComment(COMMENT_ID));
+
+        String expectedMessage = "Comment ID does not exist";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
     }
 
     private com.carta.nbaservice.entities.Game createDummyGameBasedOnFreeNBA() {

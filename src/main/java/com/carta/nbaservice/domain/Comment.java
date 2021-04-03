@@ -15,7 +15,7 @@ public class Comment {
 
     @Id
     @GeneratedValue
-    private long commentId;
+    private Integer commentId;
     @Column
     private long gameId;
     @Column
@@ -31,11 +31,11 @@ public class Comment {
 
     protected Comment() {}
 
-    public long getCommentId() {
+    public Integer getCommentId() {
         return commentId;
     }
 
-    public void setCommentId(long commentId) {
+    public void setCommentId(Integer commentId) {
         this.commentId = commentId;
     }
 

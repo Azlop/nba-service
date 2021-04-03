@@ -1,11 +1,14 @@
 package com.carta.nbaservice.controllers;
 
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.NoSuchElementException;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +17,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.carta.nbaservice.exceptions.CommentNotFoundException;
 import com.carta.nbaservice.services.CommentService;
 
 @WebMvcTest(CommentController.class)
@@ -47,5 +51,24 @@ class CommentControllerTest {
                 .andExpect(status().isOk());
 
         verify(commentService, times(1)).modifyCommentOnGame(COMMENT_ID, COMMENT_TEXT);
+    }
+
+    @Test
+    void givenValidCommentId_whenDeletingComment_thenCommentIsDeleted() throws Exception {
+        mockMvc.perform(delete("/comments/" + COMMENT_ID)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        verify(commentService, times(1)).deleteComment(COMMENT_ID);
+    }
+
+    @Test
+    void givenInvalidCommentId_whenDeletingComment_thenResponseIsNotFound() throws Exception {
+        doThrow(new CommentNotFoundException(COMMENT_ID)).
+                when(commentService).deleteComment(COMMENT_ID);
+
+        mockMvc.perform(delete("/comments/" + COMMENT_ID)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 }

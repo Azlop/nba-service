@@ -3,6 +3,8 @@ package com.carta.nbaservice.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.carta.nbaservice.domain.Comment;
 import com.carta.nbaservice.dtos.CommentDto;
+import com.carta.nbaservice.exceptions.CommentNotFoundException;
 import com.carta.nbaservice.services.CommentService;
 
 @RestController
@@ -37,4 +40,14 @@ public class CommentController {
     public Comment modifyCommentOnGame(@PathVariable(value = "commentId") Integer commentId, @RequestBody @Validated CommentDto commentDto) {
         return commentService.modifyCommentOnGame(commentId, commentDto.getText());
     }
+
+    @DeleteMapping("/{commentId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteComment(@PathVariable(value = "commentId") Integer commentId) throws CommentNotFoundException {
+        commentService.deleteComment(commentId);
+    }
+
+    @ExceptionHandler(CommentNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public void handleCommentNotFoundException(CommentNotFoundException exception) {}
 }
