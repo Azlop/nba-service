@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Player {
 
-    private long id;
+    private Integer id;
     private int ast;
     private int blk;
     private int dreb;
@@ -31,7 +31,7 @@ public class Player {
     private Team team;
     private int turnover;
 
-    public Player(long id, int ast, int blk, int dreb, double fg3Pc, int fg3a, int fg3m, double fgPct, int fga, int fgm, double ftPct, int ftm, int fta,
+    public Player(Integer id, int ast, int blk, int dreb, double fg3Pc, int fg3a, int fg3m, double fgPct, int fga, int fgm, double ftPct, int ftm, int fta,
             int ftm1, Game game, String min, int oreb, int pf, Player player, int pts, int reb, int stl, Team team, int turnover) {
         this.id = id;
         this.ast = ast;
@@ -59,11 +59,11 @@ public class Player {
         this.turnover = turnover;
     }
 
-    public long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
