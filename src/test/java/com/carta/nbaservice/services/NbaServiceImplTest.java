@@ -62,7 +62,7 @@ class NbaServiceImplTest {
 
     @Test
     void givenGameId_whenGettingGameStatistics_thenShouldReturnPlayersStatisticsForGame() {
-        long gameId = 264405;
+        Integer gameId = 264405;
 
         List<Player> players = nbaService.getPlayersFromGame(gameId);
 

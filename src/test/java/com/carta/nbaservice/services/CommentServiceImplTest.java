@@ -50,6 +50,18 @@ class CommentServiceImplTest {
     }
 
     @Test
+    void givenExistingCommentId_whenUpdatingComment_thenShouldFindAndChangeComment() {
+        Comment comment = new Comment(GAME_ID, COMMENT_TEXT);
+        comment.setCommentId(COMMENT_ID);
+
+        when(commentRepository.findById(comment.getCommentId())).thenReturn(Optional.of(comment));
+
+        commentServiceImpl.modifyCommentOnGame(COMMENT_ID, COMMENT_TEXT);
+
+        verify(commentRepository).save(comment);
+    }
+
+    @Test
     void givenValidCommentId_whenDeletingComment_thenShouldFindAndDeleteComment() {
         Comment comment = new Comment(GAME_ID, COMMENT_TEXT);
         comment.setCommentId(COMMENT_ID);

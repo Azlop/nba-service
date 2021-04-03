@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,8 @@ import com.carta.nbaservice.repos.GameRepository;
 
 @Service
 public class GameServiceImpl implements GameService {
+
+    public static final Logger LOGGER = LoggerFactory.getLogger(GameServiceImpl.class);
 
     @Autowired
     private final NbaService nbaService;
@@ -35,6 +39,7 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public Game fetchGame(int gameId) {
+        LOGGER.debug("Getting game for ID: {}", gameId);
         com.carta.nbaservice.entities.Game game = nbaService.getGame(gameId);
         List<Player> players = fetchPlayersPoints(gameId);
         List<Comment> comments = fetchComments(gameId);
@@ -47,11 +52,13 @@ public class GameServiceImpl implements GameService {
         gameDto.setAwayTeamScore(game.getVisitorTeamScore());
         gameDto.setPlayers(players);
         gameDto.setComments(comments);
+        LOGGER.debug("Successfully got game");
         return gameDto;
     }
 
     @Override
     public List<Game> listGames(String date) {
+        LOGGER.debug("Getting games for date: {}", date);
         List<com.carta.nbaservice.entities.Game> games = nbaService.getAllGamesForDate(date);
         List<Game> gameDtos = new ArrayList<>();
 
@@ -68,6 +75,7 @@ public class GameServiceImpl implements GameService {
             gameDtos.add(gameDto);
         }
 
+        LOGGER.debug("Successfully got games");
         return gameDtos;
     }
 
@@ -81,11 +89,13 @@ public class GameServiceImpl implements GameService {
     }
 
     private List<Player> fetchPlayersPoints(int gameId) {
+        LOGGER.debug("Getting players for game ID: {}", gameId);
         List<com.carta.nbaservice.entities.Player> players = nbaService.getPlayersFromGame(gameId);
         return Collections.emptyList();
     }
 
     private List<Comment> fetchComments(int gameId) {
+        LOGGER.debug("Getting comments for game ID: {}", gameId);
         return Collections.emptyList();
     }
 }

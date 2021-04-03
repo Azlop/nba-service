@@ -3,6 +3,8 @@ package com.carta.nbaservice.controllers;
 import java.util.Date;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +20,8 @@ import com.carta.nbaservice.services.GameService;
 @RequestMapping(path = "/games")
 public class GameController {
 
+    public static final Logger LOGGER = LoggerFactory.getLogger(GameController.class);
+
     private final GameService gameService;
 
     @Autowired
@@ -27,11 +31,13 @@ public class GameController {
 
     @GetMapping(value = "/{gameId}")
     public Game getGame(@PathVariable(value = "gameId") int gameId) {
+        LOGGER.info("Accessing GET Game endpoint for ID: {}", gameId);
         return gameService.fetchGame(gameId);
     }
 
     @GetMapping
     public List<Game> getAllGamesByDate(@RequestParam(name = "date") @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
+        LOGGER.info("Accessing GET Game list endpoint for date: {}", date);
         return gameService.listGames(date.toString());
     }
 }

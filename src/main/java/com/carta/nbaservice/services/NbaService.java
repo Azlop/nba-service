@@ -8,5 +8,5 @@ import com.carta.nbaservice.entities.Player;
 public interface NbaService {
     List<Game> getAllGamesForDate(String date);
     Game getGame(Integer gameId);
-    List<Player> getPlayersFromGame(long gameId);
+    List<Player> getPlayersFromGame(Integer gameId);
 }
