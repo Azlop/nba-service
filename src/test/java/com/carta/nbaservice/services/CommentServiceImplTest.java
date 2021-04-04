@@ -8,6 +8,8 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDate;
+import java.util.Collections;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -17,9 +19,12 @@ import org.mockito.Mock;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.carta.nbaservice.domain.Comment;
-import com.carta.nbaservice.entities.Team;
+import com.carta.nbaservice.domain.Game;
+import com.carta.nbaservice.domain.Player;
 import com.carta.nbaservice.exceptions.CommentNotFoundException;
+import com.carta.nbaservice.exceptions.GameNotFoundException;
 import com.carta.nbaservice.repos.CommentRepository;
+import com.carta.nbaservice.repos.GameRepository;
 
 @ExtendWith(SpringExtension.class)
 class CommentServiceImplTest {
@@ -28,25 +33,40 @@ class CommentServiceImplTest {
     public static final String COMMENT_TEXT = "some comment";
     private static final Integer COMMENT_ID = 1;
 
-    @Mock
-    private NbaService nbaService;
-
     @InjectMocks
     private CommentServiceImpl commentServiceImpl;
 
     @Mock
     private CommentRepository commentRepository;
 
-    @Test
-    void givenValidGameIdAndCommentText_whenAddingComment_thenShouldFindComment() {
-        Comment comment = new Comment(GAME_ID, COMMENT_TEXT);
+    @Mock
+    private GameRepository gameRepository;
 
-        when(nbaService.getGame(GAME_ID)).thenReturn(createDummyGameBasedOnFreeNBA());
+    @Test
+    void givenExistingGameIdAndCommentText_whenAddingComment_thenShouldFindComment() {
+        Comment comment = new Comment(GAME_ID, COMMENT_TEXT);
+        Player player = new Player("firstName", "lastName", 20);
+        Game game = new Game(GAME_ID, LocalDate.parse("2021-03-28"), "homeTeam", "awayTeam", 50, 51,
+                Collections.singletonList(comment), Collections.singletonList(player));
+
+        when(gameRepository.findById(GAME_ID)).thenReturn(Optional.of(game));
         when(commentRepository.save(any(Comment.class))).thenReturn(comment);
 
         Comment commentResult = commentServiceImpl.addCommentToGame(GAME_ID, COMMENT_TEXT);
 
         assertNotNull(commentResult);
+    }
+
+    @Test
+    void givenNonExistingGameId_whenAddingComment_thenThrowGameNotFoundException() {
+        when(gameRepository.findById(GAME_ID)).thenReturn(Optional.empty());
+        Exception exception = assertThrows(GameNotFoundException.class, () ->
+                commentServiceImpl.addCommentToGame(GAME_ID, COMMENT_TEXT));
+
+        String expectedMessage = "Game ID does not exist";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
     }
 
     @Test
@@ -87,12 +107,5 @@ class CommentServiceImplTest {
         String actualMessage = exception.getMessage();
 
         assertTrue(actualMessage.contains(expectedMessage));
-    }
-
-    private com.carta.nbaservice.entities.Game createDummyGameBasedOnFreeNBA() {
-        Team homeTeam = new Team(1, "ht1", "home", "", "north", "hometeam1", "hometeam1");
-        Team visitorTeam = new Team(2, "vt2", "away", "", "south", "visitorTeam2", "visitorTeam2");
-        return new com.carta.nbaservice.entities.Game(GAME_ID, "2021-03-28", homeTeam, 100, 1, false,
-                2021, "final", "", visitorTeam, 90);
     }
 }

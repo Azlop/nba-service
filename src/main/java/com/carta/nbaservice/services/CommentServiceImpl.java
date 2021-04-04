@@ -1,7 +1,5 @@
 package com.carta.nbaservice.services;
 
-import java.util.NoSuchElementException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +7,9 @@ import org.springframework.stereotype.Service;
 
 import com.carta.nbaservice.domain.Comment;
 import com.carta.nbaservice.exceptions.CommentNotFoundException;
+import com.carta.nbaservice.exceptions.GameNotFoundException;
 import com.carta.nbaservice.repos.CommentRepository;
+import com.carta.nbaservice.repos.GameRepository;
 
 @Service
 public class CommentServiceImpl implements CommentService {
@@ -17,10 +17,10 @@ public class CommentServiceImpl implements CommentService {
     public static final Logger LOGGER = LoggerFactory.getLogger(CommentServiceImpl.class);
 
     @Autowired
-    private NbaService nbaService;
+    private CommentRepository commentRepository;
 
     @Autowired
-    private CommentRepository commentRepository;
+    private GameRepository gameRepository;
 
     @Override
     public Comment addCommentToGame(Integer gameId, String commentText) {
@@ -46,22 +46,19 @@ public class CommentServiceImpl implements CommentService {
         LOGGER.debug("Successfully deleted comment");
     }
 
-    private Comment verifyCommentId(Integer commentId) {
+    private Comment verifyCommentId(int commentId) {
         LOGGER.debug("Verifying existence of comment for ID: {}", commentId);
         return commentRepository.findById(commentId).orElseThrow(() -> {
-                LOGGER.error("Comment ID not found: {}", commentId);
-                throw new CommentNotFoundException(commentId);
-            });
+            LOGGER.error("Comment ID not found: {}", commentId);
+            throw new CommentNotFoundException(commentId);
+        });
     }
 
-    private void verifyGameId(Integer gameId) {
+    private void verifyGameId(int gameId) {
         LOGGER.debug("Verifying existence of game for ID: {}", gameId);
-        com.carta.nbaservice.entities.Game game = nbaService.getGame(gameId);
-        if (game == null) {
+        gameRepository.findById(gameId).orElseThrow(() -> {
             LOGGER.error("Game ID not found: {}", gameId);
-            throw new NoSuchElementException();
-        }
-        //        gameRepository.findById(gameId).orElseThrow(() ->
-        //                new NoSuchElementException("Game ID does not exist: " + gameId);
+            throw new GameNotFoundException(gameId);
+        });
     }
 }
