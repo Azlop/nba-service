@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+
+  nba-service:
+    image: nba-service:latest
+    expose:
+      - 8080
+    ports:
+      - 8080:8080
+    environment:
+      NBA_API_KEY: NTg3ZTM5MjU2N21zaDEwNjBmZWVkMjAyN2NkYnAxY2Q2YTdqc24xNjMzYmM1ZGU3MmM=
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+      MYSQL_DATABASE: games
+      MYSQL_USER: games
+      MYSQL_PASSWORD: Z2FtZXM=
+    networks:
+      - nba-service
+
+  mysql:
+    image: mysql:8.0.23
+    expose:
+      - 3306
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: Z2FtZXM=
+      MYSQL_DATABASE: games
+      MYSQL_USER: games
+      MYSQL_PASSWORD: Z2FtZXM=
+    networks:
+      - nba-service
+
+networks:
+  nba-service:
+    driver: bridge
