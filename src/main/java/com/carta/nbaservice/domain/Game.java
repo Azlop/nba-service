@@ -1,5 +1,7 @@
 package com.carta.nbaservice.domain;
 
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -9,6 +11,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "game")
@@ -17,7 +21,7 @@ public class Game {
     @Id
     private Integer gameId;
     @Column
-    private String date;
+    private LocalDate date;
     @Column
     private String homeTeamName;
     @Column
@@ -32,7 +36,7 @@ public class Game {
     @OneToMany(cascade = { CascadeType.ALL })
     private List<Player> players;
 
-    public Game(Integer gameId, String date, String homeTeamName, String awayTeamName, int homeTeamScore, int awayTeamScore, List<Comment> comments,
+    public Game(Integer gameId, LocalDate date, String homeTeamName, String awayTeamName, int homeTeamScore, int awayTeamScore, List<Comment> comments,
             List<Player> players) {
         this.gameId = gameId;
         this.date = date;
@@ -54,11 +58,11 @@ public class Game {
         this.gameId = gameId;
     }
 
-    public String getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 

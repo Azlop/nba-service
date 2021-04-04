@@ -1,5 +1,6 @@
 package com.carta.nbaservice.controllers;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -36,8 +37,8 @@ public class GameController {
     }
 
     @GetMapping
-    public List<Game> getAllGamesByDate(@RequestParam(name = "date") @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
+    public List<Game> getAllGamesByDate(@RequestParam(name = "date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
         LOGGER.info("Accessing GET Game list endpoint for date: {}", date);
-        return gameService.listGames(date.toString());
+        return gameService.listGames(date);
     }
 }

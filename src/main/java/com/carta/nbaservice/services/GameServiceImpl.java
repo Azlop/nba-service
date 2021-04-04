@@ -1,9 +1,10 @@
 package com.carta.nbaservice.services;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,38 +42,44 @@ public class GameServiceImpl implements GameService {
     @Override
     public Game getGame(int gameId) {
         LOGGER.debug("Getting game for ID: {}", gameId);
-        com.carta.nbaservice.entities.Game game = nbaService.getGame(gameId);
-        List<Player> players = getPlayersPoints(gameId);
-        List<Comment> comments = fetchComments(gameId);
-        Game gameDto = createGame(game, players, comments);
+        Optional<Game> game = this.gameRepository.findById(gameId);
+
+        if (!game.isPresent()) {
+            game = saveGame(gameId);
+        }
         LOGGER.debug("Successfully got game");
-        return gameDto;
+        return game.get();
     }
 
     @Override
-    public List<Game> listGames(String date) {
+    public List<Game> listGames(LocalDate date) {
         LOGGER.debug("Getting games for date: {}", date);
-        List<com.carta.nbaservice.entities.Game> games = nbaService.getAllGamesForDate(date);
-        List<Game> gameDtos = new ArrayList<>();
+        List<Game> games = this.gameRepository.findByDate(date);
 
-        for (com.carta.nbaservice.entities.Game game : games) {
-            List<Player> players = getPlayersPoints(game.getId());
-            List<Comment> comments = fetchComments(game.getId());
-            Game gameDto = createGame(game, players, comments);
-            gameDtos.add(gameDto);
+        if (games.isEmpty()) {
+            List<com.carta.nbaservice.entities.Game> matches = nbaService.getAllGamesForDate(date.toString());
+
+            for (com.carta.nbaservice.entities.Game match : matches) {
+                List<Player> players = getPlayersPoints(match.getId());
+                List<Comment> comments = fetchComments(match.getId());
+                Game game = createGame(match, players, comments);
+                this.gameRepository.save(game);
+                games.add(game);
+            }
         }
 
         LOGGER.debug("Successfully got games");
-        return gameDtos;
+        return games;
     }
 
-    private void verifyGameId(int gameId) {
-        com.carta.nbaservice.entities.Game game = nbaService.getGame(gameId);
-        if (game == null) {
-            throw new NoSuchElementException("Game ID does not exist: " + gameId);
-        }
-//        gameRepository.findById(gameId).orElseThrow(() ->
-//                new NoSuchElementException("Game ID does not exist: " + gameId);
+    private Optional<Game> saveGame(int gameId) {
+        Optional<Game> game;
+        com.carta.nbaservice.entities.Game match = nbaService.getGame(gameId);
+        List<Player> players = getPlayersPoints(gameId);
+        List<Comment> comments = fetchComments(gameId);
+        game = Optional.of(createGame(match, players, comments));
+        this.gameRepository.save(game.get());
+        return game;
     }
 
     private List<Player> getPlayersPoints(int gameId) {
@@ -90,6 +97,7 @@ public class GameServiceImpl implements GameService {
             }
         }
 
+        LOGGER.debug("Successfully got players");
         return players;
     }
 
@@ -101,7 +109,8 @@ public class GameServiceImpl implements GameService {
     private Game createGame(com.carta.nbaservice.entities.Game game, List<Player> players, List<Comment> comments) {
         Game gameDto = new Game();
         gameDto.setGameId(game.getId());
-        gameDto.setDate(game.getDate());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        gameDto.setDate(LocalDate.parse(game.getDate(), formatter));
         gameDto.setHomeTeamName(game.getHomeTeam().getName());
         gameDto.setAwayTeamName(game.getVisitorTeam().getName());
         gameDto.setHomeTeamScore(game.getHomeTeamScore());

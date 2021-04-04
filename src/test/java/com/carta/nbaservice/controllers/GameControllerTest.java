@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -39,7 +40,6 @@ class GameControllerTest {
     public static final String AWAY_TEAM_NAME = "Warriors";
     public static final int HOME_TEAM_SCORE = 100;
     public static final int AWAY_TEAM_SCORE = 90;
-    private static final String COMMENT_TIMESTAMP = "2021-03-28T00:00:00.000+00:00";
     private final List<Game> games = new ArrayList<>();
 
     @Autowired
@@ -76,7 +76,7 @@ class GameControllerTest {
     void givenDate_whenGettingGames_thenShouldReturnGameInfoByDateGiven() throws Exception {
         games.add(createGame());
 
-        given(gameService.listGames(GAME_DATE)).willReturn(games);
+        given(gameService.listGames(LocalDate.parse(GAME_DATE))).willReturn(games);
 
         mockMvc.perform(get("/games")
                         .param("date", GAME_DATE)
@@ -96,7 +96,7 @@ class GameControllerTest {
 
         Game game = new Game();
         game.setGameId(GAME_ID);
-        game.setDate(GAME_DATE);
+        game.setDate(LocalDate.parse(GAME_DATE));
         game.setHomeTeamName(HOME_TEAM_NAME);
         game.setAwayTeamName(AWAY_TEAM_NAME);
         game.setHomeTeamScore(HOME_TEAM_SCORE);
