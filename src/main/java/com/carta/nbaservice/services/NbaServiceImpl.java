@@ -50,9 +50,25 @@ public class NbaServiceImpl implements NbaService {
     @Override
     public List<Game> getAllGamesForDate(String date) {
         LOGGER.debug("Getting games for date: {}", date);
-        String gamesForDate = String.join("?", GAMES_URI, "dates[]=\"" + date + "\"");
+        String gamesForDate = GAMES_URI + String.format("?dates[]=\"%s\"", date) + String.format("&page=%d", FIRST_PAGE);
         ResponseEntity<DataGames> response = this.restTemplate.exchange(gamesForDate, HttpMethod.GET, this.httpEntity, DataGames.class);
-        return Objects.requireNonNull(response.getBody()).getGames();
+
+        List<Game> games = Objects.requireNonNull(response.getBody()).getGames();
+        int pageNumber = Objects.requireNonNull(response.getBody()).getMetadata().getNextPage();
+        boolean hasMorePlayers = pageNumber != 0;
+
+        while (hasMorePlayers) {
+            LOGGER.debug("Getting games for page: {}", pageNumber);
+            String nextPageGamesForDate = GAMES_URI + String.format("?dates[]=\"%s\"", date) + String.format("&page=%d", pageNumber);
+            ResponseEntity<DataGames> nextPageResponse = this.restTemplate.exchange(nextPageGamesForDate, HttpMethod.GET, this.httpEntity, DataGames.class);
+            games.addAll(Objects.requireNonNull(nextPageResponse.getBody()).getGames());
+            pageNumber = Objects.requireNonNull(nextPageResponse.getBody()).getMetadata().getNextPage();
+            if (pageNumber == 0) {
+                hasMorePlayers = false;
+            }
+        }
+
+        return games;
     }
 
     @Override
