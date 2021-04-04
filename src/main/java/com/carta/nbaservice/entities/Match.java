@@ -2,7 +2,7 @@ package com.carta.nbaservice.entities;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class Game {
+public class Match {
 
     private Integer id;
     private String date;
@@ -21,7 +21,7 @@ public class Game {
     private int visitorTeamScore;
 
 
-    public Game(Integer id, String date, Team homeTeam, int homeTeamScore, int period, boolean postseason, int season, String status, String time,
+    public Match(Integer id, String date, Team homeTeam, int homeTeamScore, int period, boolean postseason, int season, String status, String time,
             Team visitorTeam, int visitorTeamScore) {
         this.id = id;
         this.date = date;

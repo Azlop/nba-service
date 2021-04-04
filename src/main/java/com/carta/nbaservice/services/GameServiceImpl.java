@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.carta.nbaservice.domain.Comment;
 import com.carta.nbaservice.domain.Game;
 import com.carta.nbaservice.domain.Player;
+import com.carta.nbaservice.entities.Match;
 import com.carta.nbaservice.entities.PlayerStatistics;
 import com.carta.nbaservice.repos.CommentRepository;
 import com.carta.nbaservice.repos.GameRepository;
@@ -57,9 +58,9 @@ public class GameServiceImpl implements GameService {
         List<Game> games = this.gameRepository.findByDate(date);
 
         if (games.isEmpty()) {
-            List<com.carta.nbaservice.entities.Game> matches = nbaService.getAllGamesForDate(date.toString());
+            List<Match> matches = nbaService.getAllGamesForDate(date.toString());
 
-            for (com.carta.nbaservice.entities.Game match : matches) {
+            for (Match match : matches) {
                 List<Player> players = getPlayersPoints(match.getId());
                 List<Comment> comments = fetchComments(match.getId());
                 Game game = createGame(match, players, comments);
@@ -74,7 +75,7 @@ public class GameServiceImpl implements GameService {
 
     private Optional<Game> saveGame(int gameId) {
         Optional<Game> game;
-        com.carta.nbaservice.entities.Game match = nbaService.getGame(gameId);
+        Match match = nbaService.getGame(gameId);
         List<Player> players = getPlayersPoints(gameId);
         List<Comment> comments = fetchComments(gameId);
         game = Optional.of(createGame(match, players, comments));
@@ -106,15 +107,15 @@ public class GameServiceImpl implements GameService {
         return commentRepository.findByGameIdOrderByTimestampDesc(gameId);
     }
 
-    private Game createGame(com.carta.nbaservice.entities.Game game, List<Player> players, List<Comment> comments) {
+    private Game createGame(Match match, List<Player> players, List<Comment> comments) {
         Game gameDto = new Game();
-        gameDto.setGameId(game.getId());
+        gameDto.setGameId(match.getId());
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-        gameDto.setDate(LocalDate.parse(game.getDate(), formatter));
-        gameDto.setHomeTeamName(game.getHomeTeam().getName());
-        gameDto.setAwayTeamName(game.getVisitorTeam().getName());
-        gameDto.setHomeTeamScore(game.getHomeTeamScore());
-        gameDto.setAwayTeamScore(game.getVisitorTeamScore());
+        gameDto.setDate(LocalDate.parse(match.getDate(), formatter));
+        gameDto.setHomeTeamName(match.getHomeTeam().getName());
+        gameDto.setAwayTeamName(match.getVisitorTeam().getName());
+        gameDto.setHomeTeamScore(match.getHomeTeamScore());
+        gameDto.setAwayTeamScore(match.getVisitorTeamScore());
         gameDto.setPlayers(players);
         gameDto.setComments(comments);
         return gameDto;

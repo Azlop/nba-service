@@ -20,6 +20,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.carta.nbaservice.domain.Comment;
 import com.carta.nbaservice.domain.Game;
+import com.carta.nbaservice.entities.Match;
 import com.carta.nbaservice.entities.Player;
 import com.carta.nbaservice.entities.PlayerStatistics;
 import com.carta.nbaservice.entities.Team;
@@ -65,12 +66,12 @@ class GameServiceImplTest {
 
     @Test
     void givenDate_whenGettingGames_thenShouldReturnGamesForDate() {
-        List<com.carta.nbaservice.entities.Game> games = new ArrayList<>();
-        games.add(createDummyGameBasedOnFreeNBA());
-        games.add(createDummyGameBasedOnFreeNBA());
-        games.add(createDummyGameBasedOnFreeNBA());
+        List<Match> matches = new ArrayList<>();
+        matches.add(createDummyGameBasedOnFreeNBA());
+        matches.add(createDummyGameBasedOnFreeNBA());
+        matches.add(createDummyGameBasedOnFreeNBA());
 
-        when(nbaService.getAllGamesForDate(GAME_DATE)).thenReturn(games);
+        when(nbaService.getAllGamesForDate(GAME_DATE)).thenReturn(matches);
 
         List<Game> gameDtos = gameServiceImpl.listGames(LocalDate.parse(GAME_DATE));
 
@@ -78,19 +79,19 @@ class GameServiceImplTest {
         assertEquals(3, gameDtos.size());
     }
 
-    private com.carta.nbaservice.entities.Game createDummyGameBasedOnFreeNBA() {
+    private Match createDummyGameBasedOnFreeNBA() {
         Team homeTeam = createDummyTeamBasedOnFreeNBA();
         Team visitorTeam = createDummyTeamBasedOnFreeNBA();
-        return new com.carta.nbaservice.entities.Game(GAME_ID, "2021-03-28T00:00:00.000Z", homeTeam, 100, 1, false,
+        return new Match(GAME_ID, "2021-03-28T00:00:00.000Z", homeTeam, 100, 1, false,
                 2021, "final", "", visitorTeam, 90);
     }
 
     private PlayerStatistics createDummyPlayerStatisticsBasedOnFreeNBA() {
-        com.carta.nbaservice.entities.Game game = createDummyGameBasedOnFreeNBA();
+        Match match = createDummyGameBasedOnFreeNBA();
         Team homeTeam = createDummyTeamBasedOnFreeNBA();
         Player player = createDummyPlayerBasedOnFreeNBA();
         return new PlayerStatistics(1, 2, 3, 4, 5.0, 6, 7, 8.0, 9, 10, 11.0,
-        12, 13, 14, game, "15", 16, 17, player, 18, 19, 20, homeTeam, 21);
+        12, 13, 14, match, "15", 16, 17, player, 18, 19, 20, homeTeam, 21);
     }
 
     private Team createDummyTeamBasedOnFreeNBA() {

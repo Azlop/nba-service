@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.web.client.HttpClientErrorException;
 
-import com.carta.nbaservice.entities.Game;
+import com.carta.nbaservice.entities.Match;
 import com.carta.nbaservice.entities.PlayerStatistics;
 
 @SpringBootTest
@@ -27,16 +27,16 @@ class NbaServiceImplTest {
     void givenGameId_whenGettingGame_thenShouldReturnOneGame() {
         int gameId = 264402;
 
-        Game game = nbaService.getGame(gameId);
+        Match match = nbaService.getGame(gameId);
 
-        assertEquals("2021-03-28 00:00:00 UTC", game.getDate());
-        assertEquals(117, game.getHomeTeamScore());
-        assertEquals(4, game.getPeriod());
-        assertFalse(game.isPostseason());
-        assertEquals(2020, game.getSeason());
-        assertEquals("Final", game.getStatus());
-        assertEquals("", game.getTime());
-        assertEquals(122, game.getVisitorTeamScore());
+        assertEquals("2021-03-28 00:00:00 UTC", match.getDate());
+        assertEquals(117, match.getHomeTeamScore());
+        assertEquals(4, match.getPeriod());
+        assertFalse(match.isPostseason());
+        assertEquals(2020, match.getSeason());
+        assertEquals("Final", match.getStatus());
+        assertEquals("", match.getTime());
+        assertEquals(122, match.getVisitorTeamScore());
     }
 
     @Test
@@ -55,9 +55,9 @@ class NbaServiceImplTest {
     void givenDate_whenGettingGames_thenShouldReturnAllGamesForTheDate() {
         String date = "2021-03-28";
 
-        List<Game> games = nbaService.getAllGamesForDate(date);
+        List<Match> matches = nbaService.getAllGamesForDate(date);
 
-        assertThat(games, hasSize(4));
+        assertThat(matches, hasSize(4));
     }
 
     @Test

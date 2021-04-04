@@ -4,23 +4,23 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class DataGames {
+public class DataMatches {
 
     @JsonProperty("data")
-    private List<Game> games;
+    private List<Match> games;
     @JsonProperty("meta")
     private Metadata metadata;
 
-    public DataGames(List<Game> games, Metadata metadata) {
+    public DataMatches(List<Match> games, Metadata metadata) {
         this.games = games;
         this.metadata = metadata;
     }
 
-    public List<Game> getGames() {
+    public List<Match> getGames() {
         return games;
     }
 
-    public void setGames(List<Game> games) {
+    public void setGames(List<Match> games) {
         this.games = games;
     }
 

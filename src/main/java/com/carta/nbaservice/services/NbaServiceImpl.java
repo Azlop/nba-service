@@ -14,9 +14,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import com.carta.nbaservice.entities.DataGames;
+import com.carta.nbaservice.entities.DataMatches;
 import com.carta.nbaservice.entities.DataPlayers;
-import com.carta.nbaservice.entities.Game;
+import com.carta.nbaservice.entities.Match;
 import com.carta.nbaservice.entities.PlayerStatistics;
 import com.carta.nbaservice.handlers.RestTemplateResponseErrorHandler;
 
@@ -48,19 +48,19 @@ public class NbaServiceImpl implements NbaService {
     }
 
     @Override
-    public List<Game> getAllGamesForDate(String date) {
+    public List<Match> getAllGamesForDate(String date) {
         LOGGER.debug("Getting games for date: {}", date);
         String gamesForDate = GAMES_URI + String.format("?dates[]=\"%s\"", date) + String.format("&page=%d", FIRST_PAGE);
-        ResponseEntity<DataGames> response = this.restTemplate.exchange(gamesForDate, HttpMethod.GET, this.httpEntity, DataGames.class);
+        ResponseEntity<DataMatches> response = this.restTemplate.exchange(gamesForDate, HttpMethod.GET, this.httpEntity, DataMatches.class);
 
-        List<Game> games = Objects.requireNonNull(response.getBody()).getGames();
+        List<Match> games = Objects.requireNonNull(response.getBody()).getGames();
         int pageNumber = Objects.requireNonNull(response.getBody()).getMetadata().getNextPage();
         boolean hasMorePlayers = pageNumber != 0;
 
         while (hasMorePlayers) {
             LOGGER.debug("Getting games for page: {}", pageNumber);
             String nextPageGamesForDate = GAMES_URI + String.format("?dates[]=\"%s\"", date) + String.format("&page=%d", pageNumber);
-            ResponseEntity<DataGames> nextPageResponse = this.restTemplate.exchange(nextPageGamesForDate, HttpMethod.GET, this.httpEntity, DataGames.class);
+            ResponseEntity<DataMatches> nextPageResponse = this.restTemplate.exchange(nextPageGamesForDate, HttpMethod.GET, this.httpEntity, DataMatches.class);
             games.addAll(Objects.requireNonNull(nextPageResponse.getBody()).getGames());
             pageNumber = Objects.requireNonNull(nextPageResponse.getBody()).getMetadata().getNextPage();
             if (pageNumber == 0) {
@@ -72,10 +72,10 @@ public class NbaServiceImpl implements NbaService {
     }
 
     @Override
-    public Game getGame(Integer gameId) {
+    public Match getGame(Integer gameId) {
         LOGGER.debug("Getting game for ID: {}", gameId);
         String singleGame = String.join("/", GAMES_URI, gameId.toString());
-        ResponseEntity<Game> response = this.restTemplate.exchange(singleGame, HttpMethod.GET, this.httpEntity, Game.class);
+        ResponseEntity<Match> response = this.restTemplate.exchange(singleGame, HttpMethod.GET, this.httpEntity, Match.class);
         return response.getBody();
     }
 

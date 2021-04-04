@@ -20,7 +20,7 @@ public class PlayerStatistics {
     private double ftPct;
     private int fta;
     private int ftm;
-    private Game game;
+    private Match game;
     private String min;
     private int oreb;
     private int pf;
@@ -32,7 +32,7 @@ public class PlayerStatistics {
     private int turnover;
 
     public PlayerStatistics(Integer id, int ast, int blk, int dreb, double fg3Pc, int fg3a, int fg3m, double fgPct, int fga, int fgm, double ftPct, int ftm, int fta,
-            int ftm1, Game game, String min, int oreb, int pf, Player player, int pts, int reb, int stl, Team team, int turnover) {
+            int ftm1, Match game, String min, int oreb, int pf, Player player, int pts, int reb, int stl, Team team, int turnover) {
         this.id = id;
         this.ast = ast;
         this.blk = blk;
@@ -155,11 +155,11 @@ public class PlayerStatistics {
         this.ftm = ftm;
     }
 
-    public Game getGame() {
+    public Match getGame() {
         return game;
     }
 
-    public void setGame(Game game) {
+    public void setGame(Match game) {
         this.game = game;
     }
 
