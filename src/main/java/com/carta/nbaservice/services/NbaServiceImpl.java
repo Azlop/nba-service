@@ -33,6 +33,8 @@ public class NbaServiceImpl implements NbaService {
     private static final String HEADER_KEY = "x-rapidapi-key";
     private static final String HEADER_HOST = "x-rapidapi-host";
 
+    private static final int FIRST_PAGE = 1;
+
     private final RestTemplate restTemplate;
     private final HttpEntity<String> httpEntity;
 
@@ -63,9 +65,28 @@ public class NbaServiceImpl implements NbaService {
 
     @Override
     public List<PlayerStatistics> getPlayersFromGame(Integer gameId) {
-        LOGGER.debug("Getting players points for game ID: {}", gameId);
-        String singleGame = String.join("?", STATISTICS_URI, "game_ids[]=" + gameId);
-        ResponseEntity<DataPlayers> response = this.restTemplate.exchange(singleGame, HttpMethod.GET, this.httpEntity, DataPlayers.class);
-        return Objects.requireNonNull(response.getBody()).getPlayers();
+        LOGGER.debug("Getting players for game ID: {}", gameId);
+        ResponseEntity<DataPlayers> response = getDataPlayersResponseEntity(gameId, FIRST_PAGE);
+
+        List<PlayerStatistics> playerStatistics = Objects.requireNonNull(response.getBody()).getPlayers();
+        int pageNumber = Objects.requireNonNull(response.getBody()).getMetadata().getNextPage();
+        boolean hasMorePlayers = pageNumber != 0;
+
+        while (hasMorePlayers) {
+            LOGGER.debug("Getting players for page {}", pageNumber);
+            ResponseEntity<DataPlayers> nextPageResponse = getDataPlayersResponseEntity(gameId, pageNumber);
+            playerStatistics.addAll(Objects.requireNonNull(nextPageResponse.getBody()).getPlayers());
+            pageNumber = Objects.requireNonNull(nextPageResponse.getBody()).getMetadata().getNextPage();
+            if (pageNumber == 0) {
+                hasMorePlayers = false;
+            }
+        }
+
+        return playerStatistics;
+    }
+
+    private ResponseEntity<DataPlayers> getDataPlayersResponseEntity(Integer gameId, int firstPage) {
+        String singleGameUrl = STATISTICS_URI + String.format("?game_ids[]=%d", gameId) + String.format("&page=%d", firstPage);
+        return this.restTemplate.exchange(singleGameUrl, HttpMethod.GET, this.httpEntity, DataPlayers.class);
     }
 }

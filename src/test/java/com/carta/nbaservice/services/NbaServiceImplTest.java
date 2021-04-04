@@ -61,11 +61,11 @@ class NbaServiceImplTest {
     }
 
     @Test
-    void givenGameId_whenGettingGameStatistics_thenShouldReturnPlayersStatisticsForGame() {
+    void givenGameIdWithTwoPages_whenGettingPlayerStatistics_thenShouldReturnPlayersStatisticsForGame() {
         Integer gameId = 264405;
 
         List<PlayerStatistics> players = nbaService.getPlayersFromGame(gameId);
 
-        assertThat(players, hasSize(25));
+        assertThat(players, hasSize(30));
     }
 }
