@@ -10,28 +10,17 @@ public class Match {
     private Team homeTeam;
     @JsonProperty("home_team_score")
     private int homeTeamScore;
-    private int period;
-    private boolean postseason;
-    private int season;
-    private String status;
-    private String time;
     @JsonProperty("visitor_team")
     private Team visitorTeam;
     @JsonProperty("visitor_team_score")
     private int visitorTeamScore;
 
 
-    public Match(Integer id, String date, Team homeTeam, int homeTeamScore, int period, boolean postseason, int season, String status, String time,
-            Team visitorTeam, int visitorTeamScore) {
+    public Match(Integer id, String date, Team homeTeam, int homeTeamScore, Team visitorTeam, int visitorTeamScore) {
         this.id = id;
         this.date = date;
         this.homeTeam = homeTeam;
         this.homeTeamScore = homeTeamScore;
-        this.period = period;
-        this.postseason = postseason;
-        this.season = season;
-        this.status = status;
-        this.time = time;
         this.visitorTeam = visitorTeam;
         this.visitorTeamScore = visitorTeamScore;
     }
@@ -66,46 +55,6 @@ public class Match {
 
     public void setHomeTeamScore(int homeTeamScore) {
         this.homeTeamScore = homeTeamScore;
-    }
-
-    public int getPeriod() {
-        return period;
-    }
-
-    public void setPeriod(int period) {
-        this.period = period;
-    }
-
-    public boolean isPostseason() {
-        return postseason;
-    }
-
-    public void setPostseason(boolean postseason) {
-        this.postseason = postseason;
-    }
-
-    public int getSeason() {
-        return season;
-    }
-
-    public void setSeason(int season) {
-        this.season = season;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getTime() {
-        return time;
-    }
-
-    public void setTime(String time) {
-        this.time = time;
     }
 
     public Team getVisitorTeam() {

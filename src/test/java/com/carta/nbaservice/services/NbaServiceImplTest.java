@@ -3,7 +3,6 @@ package com.carta.nbaservice.services;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -30,12 +29,9 @@ class NbaServiceImplTest {
         Match match = nbaService.getGame(gameId);
 
         assertEquals("2021-03-28 00:00:00 UTC", match.getDate());
+        assertEquals("Raptors", match.getHomeTeam().getName());
+        assertEquals("Trail Blazers", match.getVisitorTeam().getName());
         assertEquals(117, match.getHomeTeamScore());
-        assertEquals(4, match.getPeriod());
-        assertFalse(match.isPostseason());
-        assertEquals(2020, match.getSeason());
-        assertEquals("Final", match.getStatus());
-        assertEquals("", match.getTime());
         assertEquals(122, match.getVisitorTeamScore());
     }
 

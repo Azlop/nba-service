@@ -82,16 +82,14 @@ class GameServiceImplTest {
     private Match createDummyGameBasedOnFreeNBA() {
         Team homeTeam = createDummyTeamBasedOnFreeNBA();
         Team visitorTeam = createDummyTeamBasedOnFreeNBA();
-        return new Match(GAME_ID, "2021-03-28T00:00:00.000Z", homeTeam, 100, 1, false,
-                2021, "final", "", visitorTeam, 90);
+        return new Match(GAME_ID, "2021-03-28T00:00:00.000Z", homeTeam, 100, visitorTeam, 90);
     }
 
     private PlayerStatistics createDummyPlayerStatisticsBasedOnFreeNBA() {
         Match match = createDummyGameBasedOnFreeNBA();
         Team homeTeam = createDummyTeamBasedOnFreeNBA();
         Player player = createDummyPlayerBasedOnFreeNBA();
-        return new PlayerStatistics(1, 2, 3, 4, 5.0, 6, 7, 8.0, 9, 10, 11.0,
-        12, 13, 14, match, "15", 16, 17, player, 18, 19, 20, homeTeam, 21);
+        return new PlayerStatistics( player, 18);
     }
 
     private Team createDummyTeamBasedOnFreeNBA() {
@@ -99,6 +97,6 @@ class GameServiceImplTest {
     }
 
     private Player createDummyPlayerBasedOnFreeNBA() {
-        return new Player(3, "first", 4, 5, "last", "F", 1, 6);
+        return new Player("first", "last");
     }
 }
