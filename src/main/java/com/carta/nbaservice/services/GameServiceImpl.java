@@ -50,6 +50,9 @@ public class GameServiceImpl implements GameService {
         if (!game.isPresent()) {
             game = saveGame(gameId);
         }
+
+        game.get().setComments(fetchComments(gameId));
+
         LOGGER.debug("Successfully got game");
         return game.get();
     }
@@ -60,12 +63,11 @@ public class GameServiceImpl implements GameService {
         List<Game> games = this.gameRepository.findByDate(date);
 
         if (games.isEmpty()) {
-            List<Match> matches = nbaService.getAllGamesForDate(date.toString());
+            List<Match> matches = this.nbaService.getAllGamesForDate(date.toString());
 
             for (Match match : matches) {
                 List<Player> players = getPlayersPoints(match.getId());
-                List<Comment> comments = fetchComments(match.getId());
-                Game game = createGame(match, players, comments);
+                Game game = createGame(match, players);
                 this.gameRepository.save(game);
                 games.add(game);
             }
@@ -77,17 +79,16 @@ public class GameServiceImpl implements GameService {
 
     private Optional<Game> saveGame(int gameId) {
         Optional<Game> game;
-        Match match = nbaService.getGame(gameId);
+        Match match = this.nbaService.getGame(gameId);
         List<Player> players = getPlayersPoints(gameId);
-        List<Comment> comments = fetchComments(gameId);
-        game = Optional.of(createGame(match, players, comments));
+        game = Optional.of(createGame(match, players));
         this.gameRepository.save(game.get());
         return game;
     }
 
     private List<Player> getPlayersPoints(int gameId) {
         LOGGER.debug("Getting players for game ID: {}", gameId);
-        List<PlayerStatistics> playerStatistics = nbaService.getPlayersFromGame(gameId);
+        List<PlayerStatistics> playerStatistics = this.nbaService.getPlayersFromGame(gameId);
         List<Player> players = new ArrayList<>();
 
         for (PlayerStatistics playerStatistic : playerStatistics) {
@@ -106,10 +107,10 @@ public class GameServiceImpl implements GameService {
 
     private List<Comment> fetchComments(int gameId) {
         LOGGER.debug("Getting comments for game ID: {}", gameId);
-        return commentRepository.findByGameIdOrderByTimestampDesc(gameId);
+        return this.commentRepository.findByGameIdOrderByTimestampDesc(gameId);
     }
 
-    private Game createGame(Match match, List<Player> players, List<Comment> comments) {
+    private Game createGame(Match match, List<Player> players) {
         Game game = new Game();
         game.setGameId(match.getId());
         game.setDate(parseDate(match.getDate()));
@@ -118,7 +119,6 @@ public class GameServiceImpl implements GameService {
         game.setHomeTeamScore(match.getHomeTeamScore());
         game.setAwayTeamScore(match.getVisitorTeamScore());
         game.setPlayers(players);
-        game.setComments(comments);
         return game;
     }
 
@@ -129,7 +129,7 @@ public class GameServiceImpl implements GameService {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern(datePattern);
                 return LocalDate.parse(date, formatter);
             } catch (DateTimeParseException exception) {
-                LOGGER.error("Could not parse date \"{}\" with pattern \"{}\"",
+                LOGGER.warn("Could not parse date \"{}\" with pattern \"{}\"",
                         date, datePattern);
             }
         }
