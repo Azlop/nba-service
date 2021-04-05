@@ -22,13 +22,23 @@ Run mysql first:
 docker-compose start mysql
 ```
 
+Check if mysql is ready for connections
+```shell
+docker-compose logs -f mysql | grep "ready for connections"
+```
+
 Run nba-service:
 ```shell
 docker-compose start nba-service
 ```
 
+Get logs of nba-service:
+```shell
+docker-compose logs -f nba-service
+```
+
 You can use postman to make requests to the container:
 ```
-http://localhost:8080/games/<game-id>
+http://localhost:8080/games/264402
 http://localhost:8080/games?date=2021-03-28
 ```
