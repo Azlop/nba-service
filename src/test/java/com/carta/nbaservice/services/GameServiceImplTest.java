@@ -7,7 +7,6 @@ import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -48,13 +47,14 @@ class GameServiceImplTest {
 
     @Test
     void givenGameId_whenGettingGameInfo_thenGameIsFound() {
+        String datePatternWhenGettingGamesByDate = "2021-03-28 00:00:00 UTC";
         Comment comment = new Comment(GAME_ID, COMMENT_TEXT);
         List<PlayerStatistics> playerStatistics = new ArrayList<>();
         playerStatistics.add(createDummyPlayerStatisticsBasedOnFreeNBA());
 
         when(gameRepository.findById(GAME_ID)).thenReturn(Optional.empty());
         when(commentRepository.findByGameIdOrderByTimestampDesc(GAME_ID)).thenReturn(Collections.singletonList(comment));
-        when(nbaService.getGame(GAME_ID)).thenReturn(createDummyGameBasedOnFreeNBA());
+        when(nbaService.getGame(GAME_ID)).thenReturn(createDummyGameBasedOnFreeNBA(datePatternWhenGettingGamesByDate));
         when(nbaService.getPlayersFromGame(GAME_ID)).thenReturn(playerStatistics);
 
         Game game = gameServiceImpl.getGame(GAME_ID);
@@ -66,28 +66,27 @@ class GameServiceImplTest {
 
     @Test
     void givenDate_whenGettingGames_thenShouldReturnGamesForDate() {
+        String datePatternWhenGettingGamesByDate = "2021-03-28T00:00:00.000Z";
         List<Match> matches = new ArrayList<>();
-        matches.add(createDummyGameBasedOnFreeNBA());
-        matches.add(createDummyGameBasedOnFreeNBA());
-        matches.add(createDummyGameBasedOnFreeNBA());
+        matches.add(createDummyGameBasedOnFreeNBA(datePatternWhenGettingGamesByDate));
+        matches.add(createDummyGameBasedOnFreeNBA(datePatternWhenGettingGamesByDate));
+        matches.add(createDummyGameBasedOnFreeNBA(datePatternWhenGettingGamesByDate));
 
         when(nbaService.getAllGamesForDate(GAME_DATE)).thenReturn(matches);
 
-        List<Game> gameDtos = gameServiceImpl.listGames(LocalDate.parse(GAME_DATE));
+        List<Game> games = gameServiceImpl.listGames(LocalDate.parse(GAME_DATE));
 
-        assertNotNull(gameDtos);
-        assertEquals(3, gameDtos.size());
+        assertNotNull(games);
+        assertEquals(3, games.size());
     }
 
-    private Match createDummyGameBasedOnFreeNBA() {
+    private Match createDummyGameBasedOnFreeNBA(String date) {
         Team homeTeam = createDummyTeamBasedOnFreeNBA();
         Team visitorTeam = createDummyTeamBasedOnFreeNBA();
-        return new Match(GAME_ID, "2021-03-28T00:00:00.000Z", homeTeam, 100, visitorTeam, 90);
+        return new Match(GAME_ID, date, homeTeam, 100, visitorTeam, 90);
     }
 
     private PlayerStatistics createDummyPlayerStatisticsBasedOnFreeNBA() {
-        Match match = createDummyGameBasedOnFreeNBA();
-        Team homeTeam = createDummyTeamBasedOnFreeNBA();
         Player player = createDummyPlayerBasedOnFreeNBA();
         return new PlayerStatistics( player, 18);
     }

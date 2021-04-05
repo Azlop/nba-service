@@ -1,8 +1,11 @@
 package com.carta.nbaservice.services;
 
+import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,6 +19,7 @@ import com.carta.nbaservice.domain.Game;
 import com.carta.nbaservice.domain.Player;
 import com.carta.nbaservice.entities.Match;
 import com.carta.nbaservice.entities.PlayerStatistics;
+import com.carta.nbaservice.exceptions.GameNotFoundException;
 import com.carta.nbaservice.repos.CommentRepository;
 import com.carta.nbaservice.repos.GameRepository;
 
@@ -108,16 +112,30 @@ public class GameServiceImpl implements GameService {
     }
 
     private Game createGame(Match match, List<Player> players, List<Comment> comments) {
-        Game gameDto = new Game();
-        gameDto.setGameId(match.getId());
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-        gameDto.setDate(LocalDate.parse(match.getDate(), formatter));
-        gameDto.setHomeTeamName(match.getHomeTeam().getName());
-        gameDto.setAwayTeamName(match.getVisitorTeam().getName());
-        gameDto.setHomeTeamScore(match.getHomeTeamScore());
-        gameDto.setAwayTeamScore(match.getVisitorTeamScore());
-        gameDto.setPlayers(players);
-        gameDto.setComments(comments);
-        return gameDto;
+        Game game = new Game();
+        game.setGameId(match.getId());
+        game.setDate(parseDate(match.getDate()));
+        game.setHomeTeamName(match.getHomeTeam().getName());
+        game.setAwayTeamName(match.getVisitorTeam().getName());
+        game.setHomeTeamScore(match.getHomeTeamScore());
+        game.setAwayTeamScore(match.getVisitorTeamScore());
+        game.setPlayers(players);
+        game.setComments(comments);
+        return game;
+    }
+
+    private LocalDate parseDate(String date) {
+        List<String> datePatterns = Arrays.asList("yyyy-MM-dd HH:mm:ss 'UTC'", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        for (String datePattern : datePatterns) {
+            try {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern(datePattern);
+                return LocalDate.parse(date, formatter);
+            } catch (DateTimeParseException exception) {
+                LOGGER.error("Could not parse date \"{}\" with pattern \"{}\"",
+                        date, datePattern);
+            }
+        }
+        LOGGER.error("Date could not be parsed with the available patterns");
+        return null;
     }
 }
