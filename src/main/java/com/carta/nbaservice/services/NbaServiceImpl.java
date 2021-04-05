@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import com.carta.nbaservice.configurations.AppConfig;
 import com.carta.nbaservice.entities.DataMatches;
 import com.carta.nbaservice.entities.DataPlayers;
 import com.carta.nbaservice.entities.Match;
@@ -28,21 +30,19 @@ public class NbaServiceImpl implements NbaService {
     private static final String BASE_FREE_NBA_URL = "https://free-nba.p.rapidapi.com";
     private static final String GAMES_URI = BASE_FREE_NBA_URL + "/games";
     private static final String STATISTICS_URI = BASE_FREE_NBA_URL + "/stats";
-    private static final String KEY = "587e392567msh1060feed2027cdbp1cd6a7jsn1633bc5de72c";
     private static final String HOST = "free-nba.p.rapidapi.com";
     private static final String HEADER_KEY = "x-rapidapi-key";
     private static final String HEADER_HOST = "x-rapidapi-host";
-
     private static final int FIRST_PAGE = 1;
 
     private final RestTemplate restTemplate;
     private final HttpEntity<String> httpEntity;
 
     @Autowired
-    public NbaServiceImpl(RestTemplateBuilder restTemplateBuilder) {
+    public NbaServiceImpl(RestTemplateBuilder restTemplateBuilder, AppConfig appConfig) {
         this.restTemplate = restTemplateBuilder.errorHandler(new RestTemplateResponseErrorHandler()).build();
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.set(HEADER_KEY, KEY);
+        httpHeaders.set(HEADER_KEY, appConfig.getKey());
         httpHeaders.set(HEADER_HOST, HOST);
         this.httpEntity = new HttpEntity<>(httpHeaders);
     }
@@ -50,8 +50,7 @@ public class NbaServiceImpl implements NbaService {
     @Override
     public List<Match> getAllGamesForDate(String date) {
         LOGGER.debug("Getting games for date: {}", date);
-        String gamesForDate = GAMES_URI + String.format("?dates[]=\"%s\"", date) + String.format("&page=%d", FIRST_PAGE);
-        ResponseEntity<DataMatches> response = this.restTemplate.exchange(gamesForDate, HttpMethod.GET, this.httpEntity, DataMatches.class);
+        ResponseEntity<DataMatches> response = getDataMatchesResponseEntity(date, FIRST_PAGE);
 
         List<Match> games = Objects.requireNonNull(response.getBody()).getGames();
         int pageNumber = Objects.requireNonNull(response.getBody()).getMetadata().getNextPage();
@@ -59,8 +58,7 @@ public class NbaServiceImpl implements NbaService {
 
         while (hasMorePlayers) {
             LOGGER.debug("Getting games for page: {}", pageNumber);
-            String nextPageGamesForDate = GAMES_URI + String.format("?dates[]=\"%s\"", date) + String.format("&page=%d", pageNumber);
-            ResponseEntity<DataMatches> nextPageResponse = this.restTemplate.exchange(nextPageGamesForDate, HttpMethod.GET, this.httpEntity, DataMatches.class);
+            ResponseEntity<DataMatches> nextPageResponse = getDataMatchesResponseEntity(date, pageNumber);
             games.addAll(Objects.requireNonNull(nextPageResponse.getBody()).getGames());
             pageNumber = Objects.requireNonNull(nextPageResponse.getBody()).getMetadata().getNextPage();
             if (pageNumber == 0) {
@@ -104,5 +102,10 @@ public class NbaServiceImpl implements NbaService {
     private ResponseEntity<DataPlayers> getDataPlayersResponseEntity(Integer gameId, int firstPage) {
         String singleGameUrl = STATISTICS_URI + String.format("?game_ids[]=%d", gameId) + String.format("&page=%d", firstPage);
         return this.restTemplate.exchange(singleGameUrl, HttpMethod.GET, this.httpEntity, DataPlayers.class);
+    }
+
+    private ResponseEntity<DataMatches> getDataMatchesResponseEntity(String date, int pageNumber) {
+        String gamesForDate = GAMES_URI + String.format("?dates[]=\"%s\"", date) + String.format("&page=%d", pageNumber);
+        return this.restTemplate.exchange(gamesForDate, HttpMethod.GET, this.httpEntity, DataMatches.class);
     }
 }

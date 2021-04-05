@@ -9,14 +9,20 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.client.HttpClientErrorException;
 
+import com.carta.nbaservice.configurations.AppConfig;
 import com.carta.nbaservice.entities.Match;
 import com.carta.nbaservice.entities.PlayerStatistics;
 
+@ExtendWith(SpringExtension.class)
 @SpringBootTest
+@EnableConfigurationProperties(value = AppConfig.class)
 class NbaServiceImplTest {
 
     @Autowired
@@ -24,9 +30,7 @@ class NbaServiceImplTest {
 
     @Test
     void givenGameId_whenGettingGame_thenShouldReturnOneGame() {
-        int gameId = 264402;
-
-        Match match = nbaService.getGame(gameId);
+        Match match = nbaService.getGame(264402);
 
         assertEquals("2021-03-28 00:00:00 UTC", match.getDate());
         assertEquals("Raptors", match.getHomeTeam().getName());
