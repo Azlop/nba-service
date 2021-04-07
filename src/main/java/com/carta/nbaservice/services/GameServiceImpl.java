@@ -59,7 +59,7 @@ public class GameServiceImpl implements GameService {
     @Override
     public Game getGame(int gameId) {
         LOGGER.debug("Getting game for ID: {}", gameId);
-        Optional<Game> game = this.gameRepository.findById(gameId);
+        Optional<Game> game = this.gameRepository.findByGameId(gameId);
 
         if (!game.isPresent()) {
             game = saveGame(gameId);

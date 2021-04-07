@@ -56,7 +56,7 @@ public class CommentServiceImpl implements CommentService {
 
     private void verifyGameId(int gameId) {
         LOGGER.debug("Verifying existence of game for ID: {}", gameId);
-        gameRepository.findById(gameId).orElseThrow(() -> {
+        gameRepository.findByGameId(gameId).orElseThrow(() -> {
             LOGGER.error("Game ID not found: {}", gameId);
             throw new GameNotFoundException(gameId);
         });

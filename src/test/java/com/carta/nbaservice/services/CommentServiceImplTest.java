@@ -19,7 +19,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.carta.nbaservice.domain.Comment;
 import com.carta.nbaservice.domain.Game;
-import com.carta.nbaservice.domain.Player;
 import com.carta.nbaservice.exceptions.CommentNotFoundException;
 import com.carta.nbaservice.exceptions.GameNotFoundException;
 import com.carta.nbaservice.repos.CommentRepository;
@@ -44,10 +43,9 @@ class CommentServiceImplTest {
     @Test
     void givenExistingGameIdAndCommentText_whenAddingComment_thenShouldFindComment() {
         Comment comment = new Comment(GAME_ID, COMMENT_TEXT);
-        Player player = new Player("firstName", "lastName");
         Game game = new Game(GAME_ID, LocalDate.parse("2021-03-28"), "homeTeam", "awayTeam", 50, 51);
 
-        when(gameRepository.findById(GAME_ID)).thenReturn(Optional.of(game));
+        when(gameRepository.findByGameId(GAME_ID)).thenReturn(Optional.of(game));
         when(commentRepository.save(any(Comment.class))).thenReturn(comment);
 
         Comment commentResult = commentServiceImpl.addCommentToGame(GAME_ID, COMMENT_TEXT);
@@ -57,7 +55,7 @@ class CommentServiceImplTest {
 
     @Test
     void givenNonExistingGameId_whenAddingComment_thenThrowGameNotFoundException() {
-        when(gameRepository.findById(GAME_ID)).thenReturn(Optional.empty());
+        when(gameRepository.findByGameId(GAME_ID)).thenReturn(Optional.empty());
         Exception exception = assertThrows(GameNotFoundException.class, () ->
                 commentServiceImpl.addCommentToGame(GAME_ID, COMMENT_TEXT));
 
