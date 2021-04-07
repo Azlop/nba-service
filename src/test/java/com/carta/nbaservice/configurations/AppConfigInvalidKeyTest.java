@@ -19,7 +19,7 @@ import com.carta.nbaservice.services.NbaService;
 @ExtendWith(SpringExtension.class)
 @EnableConfigurationProperties(value = AppConfig.class)
 @TestPropertySource("classpath:invalid-key.properties")
-class AppConfigTest {
+class AppConfigInvalidKeyTest {
 
     public static final int GAME_ID = 264402;
     public static final String AN_ERROR_HAS_OCCURRED = "403 An error has occurred";

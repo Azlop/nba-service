@@ -1,0 +1,279 @@
+{
+	"info": {
+		"_postman_id": "4dc7a250-4c2e-4e3d-beb9-3fc24692df0c",
+		"name": "nba-service",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get Games for date 2021-03-28",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/games?date=2021-03-28",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"games"
+					],
+					"query": [
+						{
+							"key": "date",
+							"value": "2021-03-28"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get game id 264402",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/games/264402",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"games",
+						"264402"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post comment",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"gameId\":264402,\n    \"text\":\"stupid game\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/comments",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"comments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update comment",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"text\":\"stupid game\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/comments/80",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"comments",
+						"80"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete comment",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"text\": \"It was fun!\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/comments/19",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"comments",
+						"19"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "FREE NBA Get stats for game 264402",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-rapidapi-key",
+						"value": "587e392567msh1060feed2027cdbp1cd6a7jsn1633bc5de72c",
+						"type": "text"
+					},
+					{
+						"key": "x-rapidapi-host",
+						"value": "x-rapidapi-key",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://free-nba.p.rapidapi.com/stats?game_ids[]=\"264405\"",
+					"protocol": "https",
+					"host": [
+						"free-nba",
+						"p",
+						"rapidapi",
+						"com"
+					],
+					"path": [
+						"stats"
+					],
+					"query": [
+						{
+							"key": "game_ids[]",
+							"value": "\"264405\""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "FREE NBA Get games for date",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-rapidapi-key",
+						"value": "587e392567msh1060feed2027cdbp1cd6a7jsn1633bc5de72c",
+						"type": "text"
+					},
+					{
+						"key": "x-rapidapi-host",
+						"value": "free-nba.p.rapidapi.com",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://free-nba.p.rapidapi.com/games?dates[]=\"2021-03-28\"",
+					"protocol": "https",
+					"host": [
+						"free-nba",
+						"p",
+						"rapidapi",
+						"com"
+					],
+					"path": [
+						"games"
+					],
+					"query": [
+						{
+							"key": "dates[]",
+							"value": "\"2021-03-28\""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Change log level",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"configuredLevel\": \"DEBUG\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/actuator/loggers/com.carta.nbaservice",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"actuator",
+						"loggers",
+						"com.carta.nbaservice"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
