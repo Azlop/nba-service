@@ -27,7 +27,7 @@ Check if mysql is ready for connections
 docker-compose logs -f mysql | grep "ready for connections"
 ```
 
-Run nba-service:
+Then, run nba-service:
 ```shell
 docker-compose start nba-service
 ```
@@ -37,8 +37,14 @@ Get logs of nba-service:
 docker-compose logs -f nba-service
 ```
 
-You can use postman to make requests to the container:
-```
-http://localhost:8080/games/264402
-http://localhost:8080/games?date=2021-03-28
+## Interact with application
+You can use postman to make requests to the container by importing the file: **nba-service.postman_collection.json**
+
+Or, simply use curl:
+```shell
+curl -i -X GET http://localhost:8080/games?date=2021-03-28
+curl -i -X GET http://localhost:8080/games/264402
+curl -i -X POST http://localhost:8080/comments -d '{"gameId":264402,"text":"It was cool!"}"'
+curl -i -X PATCH http://localhost:8080/comments/<comment id> -d '{"text":"It was bad!"}"'
+curl -i -X DELETE http://localhost:8080/comments/<comment id>
 ```
