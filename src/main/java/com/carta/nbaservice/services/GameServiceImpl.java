@@ -83,8 +83,11 @@ public class GameServiceImpl implements GameService {
 
             for (Match match : matches) {
                 Game game = createGame(match);
-                getAndSavePlayersPoints(game);
                 this.gameRepository.save(game);
+                getAndSavePlayersPoints(game);
+                game.setComments(fetchComments(game.getGameId()));
+                List<GamePointsDto> points = this.gameRepository.getPlayersPointsByGameId(game.getGameId());
+                game.setGamePoints(points);
                 games.add(game);
             }
         }

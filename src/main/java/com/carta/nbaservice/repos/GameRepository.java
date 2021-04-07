@@ -19,6 +19,6 @@ public interface GameRepository extends CrudRepository<Game, Integer> {
 
     @Query(value = "select player.first_name as firstName, player.last_name as lastName, player_points.points\n" + "from game\n"
             + "left outer join player_points on game.id = player_points.game_id\n" + "inner join player on player_points.player_id = player.id\n"
-            + "where game.id = 1", nativeQuery = true)
+            + "where game.game_id = :gameId", nativeQuery = true)
     List<GamePointsDto> getPlayersPointsByGameId(@Param("gameId") Integer gameId);
 }
