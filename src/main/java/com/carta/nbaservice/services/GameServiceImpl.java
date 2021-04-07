@@ -6,7 +6,6 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +20,7 @@ import com.carta.nbaservice.domain.PlayerPoints;
 import com.carta.nbaservice.dtos.GamePointsDto;
 import com.carta.nbaservice.entities.Match;
 import com.carta.nbaservice.entities.PlayerStatistics;
+import com.carta.nbaservice.exceptions.GameNotFoundException;
 import com.carta.nbaservice.repos.CommentRepository;
 import com.carta.nbaservice.repos.GameRepository;
 import com.carta.nbaservice.repos.PlayerPointsRepository;
@@ -50,21 +50,13 @@ public class GameServiceImpl implements GameService {
     @Override
     public Game getGame(int gameId) {
         LOGGER.debug("Getting game for ID: {}", gameId);
-        Optional<Game> game = this.gameRepository.findByGameId(gameId);
 
-        if (game.isEmpty()) {
-            game = saveGame(gameId);
-        }
-
-        game.get().setComments(getComments(gameId));
-        game.get().setGamePoints(getPlayersPointsByGameId(gameId));
+        Game game = verifyGameId(gameId);
+        game.setComments(getComments(gameId));
+        game.setGamePoints(getPlayersPointsByGameId(gameId));
 
         LOGGER.debug("Successfully got game information");
-        return game.get();
-    }
-
-    private List<GamePointsDto> getPlayersPointsByGameId(int gameId) {
-        return this.gameRepository.getPlayersPointsByGameId(gameId);
+        return game;
     }
 
     @Override
@@ -92,14 +84,6 @@ public class GameServiceImpl implements GameService {
 
         LOGGER.debug("Successfully got games");
         return games;
-    }
-
-    private Optional<Game> saveGame(int gameId) {
-        Match match = this.nbaService.fetchGame(gameId);
-        Optional<Game> game = Optional.of(transformToEntity(match));
-        this.gameRepository.save(game.get());
-        getAndSavePlayersPoints(game.get());
-        return game;
     }
 
     private void getAndSavePlayersPoints(Game game) {
@@ -155,5 +139,17 @@ public class GameServiceImpl implements GameService {
         }
         LOGGER.error("Date could not be parsed with the available patterns");
         return LocalDate.now();
+    }
+
+    private List<GamePointsDto> getPlayersPointsByGameId(int gameId) {
+        return this.gameRepository.getPlayersPointsByGameId(gameId);
+    }
+
+    private Game verifyGameId(int gameId) {
+        LOGGER.debug("Verifying existence of game for ID: {}", gameId);
+        return this.gameRepository.findByGameId(gameId).orElseThrow(() -> {
+            LOGGER.error("Game ID not found: {}", gameId);
+            throw new GameNotFoundException(gameId);
+        });
     }
 }

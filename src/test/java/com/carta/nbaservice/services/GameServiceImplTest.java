@@ -3,6 +3,8 @@ package com.carta.nbaservice.services;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.when;
 
@@ -24,6 +26,7 @@ import com.carta.nbaservice.entities.Match;
 import com.carta.nbaservice.entities.Player;
 import com.carta.nbaservice.entities.PlayerStatistics;
 import com.carta.nbaservice.entities.Team;
+import com.carta.nbaservice.exceptions.GameNotFoundException;
 import com.carta.nbaservice.repos.CommentRepository;
 import com.carta.nbaservice.repos.GameRepository;
 import com.carta.nbaservice.repos.PlayerPointsRepository;
@@ -60,17 +63,30 @@ class GameServiceImplTest {
         Comment comment = new Comment(GAME_ID, COMMENT_TEXT);
         List<PlayerStatistics> playerStatistics = new ArrayList<>();
         playerStatistics.add(createDummyPlayerStatisticsBasedOnFreeNBA());
+        Game game = new Game(GAME_ID, LocalDate.of(2021, 3, 28), "homeTeam", "awayTeam", 100, 90);
 
-        when(this.gameRepository.findByGameId(GAME_ID)).thenReturn(Optional.empty());
+        when(this.gameRepository.findByGameId(GAME_ID)).thenReturn(Optional.of(game));
         when(this.nbaService.fetchGame(GAME_ID)).thenReturn(createDummyGameBasedOnFreeNBA(datePatternWhenGettingGamesByDate));
         when(this.commentRepository.findByGameIdOrderByTimestampDesc(GAME_ID)).thenReturn(Collections.singletonList(comment));
         when(this.nbaService.fetchPlayersFromGame(GAME_ID)).thenReturn(playerStatistics);
         when(this.playerRepository.saveAll(anyList())).thenReturn(null);
         when(this.playerPointsRepository.saveAll(anyList())).thenReturn(null);
 
-        Game game = this.gameServiceImpl.getGame(GAME_ID);
+        Game gameResult = this.gameServiceImpl.getGame(GAME_ID);
 
-        assertThat(game.getGameId()).isEqualTo(GAME_ID);
+        assertThat(gameResult.getGameId()).isEqualTo(GAME_ID);
+    }
+
+    @Test
+    void givenGameIdNotInDB_whenGettingGameInfo_thenThrowGameNotFoundException() {
+        when(gameRepository.findByGameId(GAME_ID)).thenReturn(Optional.empty());
+        Exception exception = assertThrows(GameNotFoundException.class, () ->
+                this.gameServiceImpl.getGame(GAME_ID));
+
+        String expectedMessage = "Game ID does not exist";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
     }
 
     @Test
@@ -79,28 +95,33 @@ class GameServiceImplTest {
         Comment comment = new Comment(GAME_ID, COMMENT_TEXT);
         List<PlayerStatistics> playerStatistics = new ArrayList<>();
         playerStatistics.add(createDummyPlayerStatisticsBasedOnFreeNBA());
+        List<Match> matches = new ArrayList<>();
+        matches.add(createDummyGameBasedOnFreeNBA(invalidDate));
 
         when(this.gameRepository.findByGameId(GAME_ID)).thenReturn(Optional.empty());
-        when(this.nbaService.fetchGame(GAME_ID)).thenReturn(createDummyGameBasedOnFreeNBA(invalidDate));
+        when(this.nbaService.fetchAllGamesForDate(GAME_DATE)).thenReturn(matches);
         when(this.commentRepository.findByGameIdOrderByTimestampDesc(GAME_ID)).thenReturn(Collections.singletonList(comment));
         when(this.nbaService.fetchPlayersFromGame(GAME_ID)).thenReturn(playerStatistics);
         when(this.playerRepository.saveAll(anyList())).thenReturn(null);
         when(this.playerPointsRepository.saveAll(anyList())).thenReturn(null);
 
-        Game game = this.gameServiceImpl.getGame(GAME_ID);
+        List<Game> gameResult = this.gameServiceImpl.listGames(LocalDate.parse(GAME_DATE));
 
-        assertNotNull(game.getDate());
+        assertNotNull(gameResult.get(0).getDate());
     }
 
     @Test
     void givenDate_whenGettingGames_thenShouldReturnGamesForDate() {
         String datePatternWhenGettingGamesByDate = "2021-03-28T00:00:00.000Z";
+        List<PlayerStatistics> playerStatistics = new ArrayList<>();
+        playerStatistics.add(createDummyPlayerStatisticsBasedOnFreeNBA());
         List<Match> matches = new ArrayList<>();
         matches.add(createDummyGameBasedOnFreeNBA(datePatternWhenGettingGamesByDate));
         matches.add(createDummyGameBasedOnFreeNBA(datePatternWhenGettingGamesByDate));
         matches.add(createDummyGameBasedOnFreeNBA(datePatternWhenGettingGamesByDate));
 
         when(this.nbaService.fetchAllGamesForDate(GAME_DATE)).thenReturn(matches);
+        when(this.nbaService.fetchPlayersFromGame(GAME_ID)).thenReturn(playerStatistics);
 
         List<Game> games = this.gameServiceImpl.listGames(LocalDate.parse(GAME_DATE));
 

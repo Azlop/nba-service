@@ -48,7 +48,7 @@ public class NbaServiceImpl implements NbaService {
 
     @Override
     public List<Match> fetchAllGamesForDate(String date) {
-        LOGGER.debug("Getting games for date: {}", date);
+        LOGGER.debug("Fetching games for date: {}", date);
         ResponseEntity<DataMatches> response = fetchDataMatchesResponseEntity(date, FIRST_PAGE);
 
         List<Match> games = Objects.requireNonNull(response.getBody()).getGames();
@@ -56,7 +56,7 @@ public class NbaServiceImpl implements NbaService {
         boolean hasMorePlayers = pageNumber != 0;
 
         while (hasMorePlayers) {
-            LOGGER.debug("Getting games for page: {}", pageNumber);
+            LOGGER.debug("Fetching games for page: {}", pageNumber);
             ResponseEntity<DataMatches> nextPageResponse = fetchDataMatchesResponseEntity(date, pageNumber);
             games.addAll(Objects.requireNonNull(nextPageResponse.getBody()).getGames());
             pageNumber = Objects.requireNonNull(nextPageResponse.getBody()).getMetadata().getNextPage();
@@ -70,7 +70,7 @@ public class NbaServiceImpl implements NbaService {
 
     @Override
     public Match fetchGame(Integer gameId) {
-        LOGGER.debug("Getting game for ID: {}", gameId);
+        LOGGER.debug("Fetching game for ID: {}", gameId);
         String singleGame = String.join("/", GAMES_URI, gameId.toString());
         ResponseEntity<Match> response = this.restTemplate.exchange(singleGame, HttpMethod.GET, this.httpEntity, Match.class);
         return response.getBody();
@@ -78,7 +78,7 @@ public class NbaServiceImpl implements NbaService {
 
     @Override
     public List<PlayerStatistics> fetchPlayersFromGame(Integer gameId) {
-        LOGGER.debug("Getting players for game ID: {}", gameId);
+        LOGGER.debug("Fetching players for game ID: {}", gameId);
         ResponseEntity<DataPlayers> response = fetchDataPlayersResponseEntity(gameId, FIRST_PAGE);
 
         List<PlayerStatistics> playerStatistics = Objects.requireNonNull(response.getBody()).getPlayers();
@@ -86,7 +86,7 @@ public class NbaServiceImpl implements NbaService {
         boolean hasMorePlayers = pageNumber != 0;
 
         while (hasMorePlayers) {
-            LOGGER.debug("Getting players for page {}", pageNumber);
+            LOGGER.debug("Fetching players for page {}", pageNumber);
             ResponseEntity<DataPlayers> nextPageResponse = fetchDataPlayersResponseEntity(gameId, pageNumber);
             playerStatistics.addAll(Objects.requireNonNull(nextPageResponse.getBody()).getPlayers());
             pageNumber = Objects.requireNonNull(nextPageResponse.getBody()).getMetadata().getNextPage();
