@@ -119,14 +119,6 @@ public class Game {
         return comments;
     }
 
-    public List<PlayerPoints> getPoints() {
-        return points;
-    }
-
-    public void setPoints(List<PlayerPoints> points) {
-        this.points = points;
-    }
-
     public List<GamePointsDto> getGamePoints() {
         return gamePoints;
     }
