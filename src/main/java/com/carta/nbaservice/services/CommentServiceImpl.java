@@ -16,18 +16,21 @@ public class CommentServiceImpl implements CommentService {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(CommentServiceImpl.class);
 
-    @Autowired
-    private CommentRepository commentRepository;
+    private final CommentRepository commentRepository;
+    private final GameRepository gameRepository;
 
     @Autowired
-    private GameRepository gameRepository;
+    public CommentServiceImpl(CommentRepository commentRepository, GameRepository gameRepository) {
+        this.commentRepository = commentRepository;
+        this.gameRepository = gameRepository;
+    }
 
     @Override
     public Comment addCommentToGame(Integer gameId, String commentText) {
         verifyGameId(gameId);
         Comment comment = new Comment(gameId, commentText);
         LOGGER.debug("Creating comment: {}", comment);
-        return commentRepository.save(comment);
+        return this.commentRepository.save(comment);
     }
 
     @Override
@@ -35,20 +38,20 @@ public class CommentServiceImpl implements CommentService {
         Comment comment = verifyCommentId(commentId);
         comment.setText(commentText);
         LOGGER.debug("Updating comment: {}", comment);
-        return commentRepository.save(comment);
+        return this.commentRepository.save(comment);
     }
 
     @Override
     public void deleteComment(int commentId) {
         LOGGER.debug("Deleting comment for ID: {}", commentId);
         Comment comment = verifyCommentId(commentId);
-        commentRepository.deleteById(comment.getCommentId());
+        this. commentRepository.deleteById(comment.getCommentId());
         LOGGER.debug("Successfully deleted comment");
     }
 
     private Comment verifyCommentId(int commentId) {
         LOGGER.debug("Verifying existence of comment for ID: {}", commentId);
-        return commentRepository.findById(commentId).orElseThrow(() -> {
+        return this.commentRepository.findById(commentId).orElseThrow(() -> {
             LOGGER.error("Comment ID not found: {}", commentId);
             throw new CommentNotFoundException(commentId);
         });
@@ -56,7 +59,7 @@ public class CommentServiceImpl implements CommentService {
 
     private void verifyGameId(int gameId) {
         LOGGER.debug("Verifying existence of game for ID: {}", gameId);
-        gameRepository.findByGameId(gameId).orElseThrow(() -> {
+        this.gameRepository.findByGameId(gameId).orElseThrow(() -> {
             LOGGER.error("Game ID not found: {}", gameId);
             throw new GameNotFoundException(gameId);
         });

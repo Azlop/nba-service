@@ -31,19 +31,10 @@ public class GameServiceImpl implements GameService {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(GameServiceImpl.class);
 
-    @Autowired
     private final NbaService nbaService;
-
-    @Autowired
     private final GameRepository gameRepository;
-
-    @Autowired
     private final CommentRepository commentRepository;
-
-    @Autowired
     private final PlayerRepository playerRepository;
-
-    @Autowired
     private final PlayerPointsRepository playerPointsRepository;
 
     @Autowired
@@ -61,7 +52,7 @@ public class GameServiceImpl implements GameService {
         LOGGER.debug("Getting game for ID: {}", gameId);
         Optional<Game> game = this.gameRepository.findByGameId(gameId);
 
-        if (!game.isPresent()) {
+        if (game.isEmpty()) {
             game = saveGame(gameId);
         }
 

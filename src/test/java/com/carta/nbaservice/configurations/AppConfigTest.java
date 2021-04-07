@@ -18,7 +18,7 @@ import com.carta.nbaservice.services.NbaService;
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 @EnableConfigurationProperties(value = AppConfig.class)
-@TestPropertySource("classpath:invalid-free-nba-key.properties")
+@TestPropertySource("classpath:invalid-key.properties")
 class AppConfigTest {
 
     public static final int GAME_ID = 264402;
