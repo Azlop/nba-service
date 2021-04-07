@@ -9,7 +9,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -45,9 +44,8 @@ class CommentServiceImplTest {
     @Test
     void givenExistingGameIdAndCommentText_whenAddingComment_thenShouldFindComment() {
         Comment comment = new Comment(GAME_ID, COMMENT_TEXT);
-        Player player = new Player("firstName", "lastName", 20);
-        Game game = new Game(GAME_ID, LocalDate.parse("2021-03-28"), "homeTeam", "awayTeam", 50, 51,
-                Collections.singletonList(comment), Collections.singletonList(player));
+        Player player = new Player("firstName", "lastName");
+        Game game = new Game(GAME_ID, LocalDate.parse("2021-03-28"), "homeTeam", "awayTeam", 50, 51);
 
         when(gameRepository.findById(GAME_ID)).thenReturn(Optional.of(game));
         when(commentRepository.save(any(Comment.class))).thenReturn(comment);

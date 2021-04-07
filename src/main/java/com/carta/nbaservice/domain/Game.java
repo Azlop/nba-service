@@ -1,24 +1,28 @@
 package com.carta.nbaservice.domain;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.Transient;
+
+import com.carta.nbaservice.dtos.GamePointsDto;
 
 @Entity
 @Table(name = "game")
 public class Game {
 
     @Id
+    @GeneratedValue
+    private Integer id;
+    @Column
     private Integer gameId;
     @Column
     private LocalDate date;
@@ -33,19 +37,28 @@ public class Game {
 
     @OneToMany(cascade = { CascadeType.ALL })
     private List<Comment> comments;
-    @OneToMany(cascade = { CascadeType.ALL })
-    private List<Player> players;
 
-    public Game(Integer gameId, LocalDate date, String homeTeamName, String awayTeamName, int homeTeamScore, int awayTeamScore, List<Comment> comments,
-            List<Player> players) {
+    @OneToMany(mappedBy = "game")
+    private List<PlayerPoints> points;
+
+    @Transient
+    public List<GamePointsDto> gamePoints;
+
+    public Game(Integer gameId, LocalDate date, String homeTeamName, String awayTeamName, int homeTeamScore, int awayTeamScore) {
         this.gameId = gameId;
         this.date = date;
         this.homeTeamName = homeTeamName;
         this.awayTeamName = awayTeamName;
         this.homeTeamScore = homeTeamScore;
         this.awayTeamScore = awayTeamScore;
-        this.comments = comments;
-        this.players = players;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public Game() {}
@@ -98,20 +111,28 @@ public class Game {
         this.awayTeamScore = awayTeamScore;
     }
 
-    public List<Comment> getComments() {
-        return comments;
-    }
-
     public void setComments(List<Comment> comments) {
         this.comments = comments;
     }
 
-    public List<Player> getPlayers() {
-        return players;
+    public List<Comment> getComments() {
+        return comments;
     }
 
-    public void setPlayers(List<Player> players) {
-        this.players = players;
+    public List<PlayerPoints> getPoints() {
+        return points;
+    }
+
+    public void setPoints(List<PlayerPoints> points) {
+        this.points = points;
+    }
+
+    public List<GamePointsDto> getGamePoints() {
+        return gamePoints;
+    }
+
+    public void setGamePoints(List<GamePointsDto> gamePoints) {
+        this.gamePoints = gamePoints;
     }
 
     @Override
@@ -122,12 +143,12 @@ public class Game {
             return false;
         Game game = (Game) o;
         return homeTeamScore == game.homeTeamScore && awayTeamScore == game.awayTeamScore && Objects.equals(gameId, game.gameId) && Objects
-                .equals(date, game.date) && Objects.equals(homeTeamName, game.homeTeamName) && Objects.equals(awayTeamName, game.awayTeamName)
-                && Objects.equals(comments, game.comments) && Objects.equals(players, game.players);
+                .equals(date, game.date) && Objects.equals(homeTeamName, game.homeTeamName) && Objects.equals(awayTeamName, game.awayTeamName) && Objects
+                .equals(comments, game.comments) && Objects.equals(points, game.points);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(gameId, date, homeTeamName, awayTeamName, homeTeamScore, awayTeamScore, comments, players);
+        return Objects.hash(gameId, date, homeTeamName, awayTeamName, homeTeamScore, awayTeamScore, comments, points);
     }
 }

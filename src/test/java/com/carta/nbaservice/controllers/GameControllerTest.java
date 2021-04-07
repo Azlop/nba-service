@@ -1,10 +1,8 @@
 package com.carta.nbaservice.controllers;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -31,10 +29,8 @@ class GameControllerTest {
     public static final int GAME_ID = 1;
     public static final int COMMENT_ID = 1;
     public static final String COMMENT_TEXT = "It was bad!";
-    public static final int PLAYER_ID = 2;
     public static final String PLAYER_FIRST_NAME = "James";
     public static final String PLAYER_LAST_NAME = "Harden";
-    public static final int PLAYER_POINTS = 30;
     public static final String GAME_DATE = "2021-03-28";
     public static final String HOME_TEAM_NAME = "Suns";
     public static final String AWAY_TEAM_NAME = "Warriors";
@@ -63,13 +59,8 @@ class GameControllerTest {
                 .andExpect(jsonPath("$.awayTeamName").value(AWAY_TEAM_NAME))
                 .andExpect(jsonPath("$.homeTeamScore").value(HOME_TEAM_SCORE))
                 .andExpect(jsonPath("$.awayTeamScore").value(AWAY_TEAM_SCORE))
-                .andExpect(jsonPath("$.comments[0].commentId").value(COMMENT_ID))
-                .andExpect(jsonPath("$.comments[0].text").value(COMMENT_TEXT))
-                .andExpect(jsonPath("$.comments[0].timestamp").isNotEmpty())
-                .andExpect(jsonPath("$.players[0].playerId").value(PLAYER_ID))
-                .andExpect(jsonPath("$.players[0].firstName").value(PLAYER_FIRST_NAME))
-                .andExpect(jsonPath("$.players[0].lastName").value(PLAYER_LAST_NAME))
-                .andExpect(jsonPath("$.players[0].points").value(PLAYER_POINTS));
+                .andExpect(jsonPath("$.comments").value(hasSize(0)))
+                .andExpect(jsonPath("$.gamePoints").value(hasSize(0)));
     }
 
     @Test
@@ -89,10 +80,8 @@ class GameControllerTest {
         comment.setCommentId(COMMENT_ID);
 
         Player player = new Player();
-        player.setPlayerId(PLAYER_ID);
         player.setFirstName(PLAYER_FIRST_NAME);
         player.setLastName(PLAYER_LAST_NAME);
-        player.setPoints(PLAYER_POINTS);
 
         Game game = new Game();
         game.setGameId(GAME_ID);
@@ -101,8 +90,8 @@ class GameControllerTest {
         game.setAwayTeamName(AWAY_TEAM_NAME);
         game.setHomeTeamScore(HOME_TEAM_SCORE);
         game.setAwayTeamScore(AWAY_TEAM_SCORE);
-        game.setComments(Collections.singletonList(comment));
-        game.setPlayers(Collections.singletonList(player));
+        game.setComments(Collections.emptyList());
+        game.setGamePoints(Collections.emptyList());
 
         return game;
     }

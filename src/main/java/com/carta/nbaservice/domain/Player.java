@@ -1,11 +1,13 @@
 package com.carta.nbaservice.domain;
 
+import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -14,28 +16,29 @@ public class Player {
 
     @Id
     @GeneratedValue
-    private Integer playerId;
+    private Integer id;
+
+    @OneToMany(mappedBy = "player")
+    private List<PlayerPoints> points;
+
     @Column
     private String firstName;
     @Column
     private String lastName;
-    @Column
-    private int points;
 
-    public Player(String firstName, String lastName, int points) {
+    public Player(String firstName, String lastName) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.points = points;
     }
 
     public Player() {}
 
-    public Integer getPlayerId() {
-        return playerId;
+    public Integer getId() {
+        return id;
     }
 
-    public void setPlayerId(Integer playerId) {
-        this.playerId = playerId;
+    public void setId(Integer playerId) {
+        this.id = playerId;
     }
 
     public String getFirstName() {
@@ -54,14 +57,6 @@ public class Player {
         this.lastName = lastName;
     }
 
-    public int getPoints() {
-        return points;
-    }
-
-    public void setPoints(int points) {
-        this.points = points;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o)
@@ -69,12 +64,12 @@ public class Player {
         if (o == null || getClass() != o.getClass())
             return false;
         Player player = (Player) o;
-        return points == player.points && Objects.equals(playerId, player.playerId) && Objects.equals(firstName, player.firstName) && Objects
+        return Objects.equals(id, player.id) && Objects.equals(points, player.points) && Objects.equals(firstName, player.firstName) && Objects
                 .equals(lastName, player.lastName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(playerId, firstName, lastName, points);
+        return Objects.hash(id, points, firstName, lastName);
     }
 }

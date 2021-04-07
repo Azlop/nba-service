@@ -15,11 +15,16 @@ import org.springframework.stereotype.Service;
 
 import com.carta.nbaservice.domain.Comment;
 import com.carta.nbaservice.domain.Game;
+import com.carta.nbaservice.domain.GamePlayerPK;
 import com.carta.nbaservice.domain.Player;
+import com.carta.nbaservice.domain.PlayerPoints;
+import com.carta.nbaservice.dtos.GamePointsDto;
 import com.carta.nbaservice.entities.Match;
 import com.carta.nbaservice.entities.PlayerStatistics;
 import com.carta.nbaservice.repos.CommentRepository;
 import com.carta.nbaservice.repos.GameRepository;
+import com.carta.nbaservice.repos.PlayerPointsRepository;
+import com.carta.nbaservice.repos.PlayerRepository;
 
 @Service
 public class GameServiceImpl implements GameService {
@@ -36,10 +41,19 @@ public class GameServiceImpl implements GameService {
     private final CommentRepository commentRepository;
 
     @Autowired
-    public GameServiceImpl(NbaService nbaService, GameRepository gameRepository, CommentRepository commentRepository) {
+    private final PlayerRepository playerRepository;
+
+    @Autowired
+    private final PlayerPointsRepository playerPointsRepository;
+
+    @Autowired
+    public GameServiceImpl(NbaService nbaService, GameRepository gameRepository, CommentRepository commentRepository, PlayerRepository playerRepository,
+        PlayerPointsRepository playerPointsRepository) {
         this.nbaService = nbaService;
         this.gameRepository = gameRepository;
         this.commentRepository = commentRepository;
+        this.playerRepository = playerRepository;
+        this.playerPointsRepository = playerPointsRepository;
     }
 
     @Override
@@ -52,8 +66,10 @@ public class GameServiceImpl implements GameService {
         }
 
         game.get().setComments(fetchComments(gameId));
+        List<GamePointsDto> points = this.gameRepository.getPlayersPointsByGameId(gameId);
+        game.get().setGamePoints(points);
 
-        LOGGER.debug("Successfully got game");
+        LOGGER.debug("Successfully got game information");
         return game.get();
     }
 
@@ -66,8 +82,8 @@ public class GameServiceImpl implements GameService {
             List<Match> matches = this.nbaService.getAllGamesForDate(date.toString());
 
             for (Match match : matches) {
-                List<Player> players = getPlayersPoints(match.getId());
-                Game game = createGame(match, players);
+                Game game = createGame(match);
+                getAndSavePlayersPoints(game);
                 this.gameRepository.save(game);
                 games.add(game);
             }
@@ -78,31 +94,36 @@ public class GameServiceImpl implements GameService {
     }
 
     private Optional<Game> saveGame(int gameId) {
-        Optional<Game> game;
         Match match = this.nbaService.getGame(gameId);
-        List<Player> players = getPlayersPoints(gameId);
-        game = Optional.of(createGame(match, players));
+        Optional<Game> game = Optional.of(createGame(match));
         this.gameRepository.save(game.get());
+        getAndSavePlayersPoints(game.get());
         return game;
     }
 
-    private List<Player> getPlayersPoints(int gameId) {
-        LOGGER.debug("Getting players for game ID: {}", gameId);
-        List<PlayerStatistics> playerStatistics = this.nbaService.getPlayersFromGame(gameId);
-        List<Player> players = new ArrayList<>();
+    private void getAndSavePlayersPoints(Game game) {
+        LOGGER.debug("Getting players for game ID: {}", game.getGameId());
+        List<PlayerStatistics> playerStatistics = this.nbaService.getPlayersFromGame(game.getGameId());
+        LOGGER.debug("Successfully got players");
 
+        List<Player> players = new ArrayList<>();
+        List<PlayerPoints> playerPoints = new ArrayList<>();
+
+        LOGGER.debug("Starting to save players in database");
         for (PlayerStatistics playerStatistic : playerStatistics) {
             if (playerStatistic.getPts() > 0) {
                 Player player = new Player();
                 player.setFirstName(playerStatistic.getPlayer().getFirstName());
                 player.setLastName(playerStatistic.getPlayer().getLastName());
-                player.setPoints(playerStatistic.getPts());
+
                 players.add(player);
+                playerPoints.add(new PlayerPoints(new GamePlayerPK(game.getId(), player.getId()), game, player, playerStatistic.getPts()));
             }
         }
 
-        LOGGER.debug("Successfully got players");
-        return players;
+        this.playerRepository.saveAll(players);
+        this.playerPointsRepository.saveAll(playerPoints);
+        LOGGER.debug("Successfully saved players in database");
     }
 
     private List<Comment> fetchComments(int gameId) {
@@ -110,7 +131,7 @@ public class GameServiceImpl implements GameService {
         return this.commentRepository.findByGameIdOrderByTimestampDesc(gameId);
     }
 
-    private Game createGame(Match match, List<Player> players) {
+    private Game createGame(Match match) {
         Game game = new Game();
         game.setGameId(match.getId());
         game.setDate(parseDate(match.getDate()));
@@ -118,7 +139,6 @@ public class GameServiceImpl implements GameService {
         game.setAwayTeamName(match.getVisitorTeam().getName());
         game.setHomeTeamScore(match.getHomeTeamScore());
         game.setAwayTeamScore(match.getVisitorTeamScore());
-        game.setPlayers(players);
         return game;
     }
 

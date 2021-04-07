@@ -3,10 +3,13 @@ package com.carta.nbaservice.services;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -25,6 +28,8 @@ import com.carta.nbaservice.entities.PlayerStatistics;
 import com.carta.nbaservice.entities.Team;
 import com.carta.nbaservice.repos.CommentRepository;
 import com.carta.nbaservice.repos.GameRepository;
+import com.carta.nbaservice.repos.PlayerPointsRepository;
+import com.carta.nbaservice.repos.PlayerRepository;
 
 @ExtendWith(SpringExtension.class)
 class GameServiceImplTest {
@@ -45,6 +50,12 @@ class GameServiceImplTest {
     @Mock
     private CommentRepository commentRepository;
 
+    @Mock
+    private PlayerRepository playerRepository;
+
+    @Mock
+    private PlayerPointsRepository playerPointsRepository;
+
     @Test
     void givenGameId_whenGettingGameInfo_thenGameIsFound() {
         String datePatternWhenGettingGamesByDate = "2021-03-28 00:00:00 UTC";
@@ -54,14 +65,14 @@ class GameServiceImplTest {
 
         when(gameRepository.findById(GAME_ID)).thenReturn(Optional.empty());
         when(commentRepository.findByGameIdOrderByTimestampDesc(GAME_ID)).thenReturn(Collections.singletonList(comment));
+        when(playerRepository.saveAll(anyList())).thenReturn(null);
+        when(playerPointsRepository.saveAll(anyList())).thenReturn(null);
         when(nbaService.getGame(GAME_ID)).thenReturn(createDummyGameBasedOnFreeNBA(datePatternWhenGettingGamesByDate));
         when(nbaService.getPlayersFromGame(GAME_ID)).thenReturn(playerStatistics);
 
         Game game = gameServiceImpl.getGame(GAME_ID);
 
         assertThat(game.getGameId()).isEqualTo(GAME_ID);
-        assertEquals(1, game.getPlayers().size());
-        assertEquals(1, game.getComments().size());
     }
 
     @Test
