@@ -29,7 +29,7 @@ class AppConfigInvalidKeyTest {
 
     @Test
     void givenInvalidKey_whenAccessingNBAApi_thenShouldReturn403() {
-        Exception exception = assertThrows(HttpClientErrorException.class, () -> nbaService.getGame(GAME_ID));
+        Exception exception = assertThrows(HttpClientErrorException.class, () -> nbaService.fetchGame(GAME_ID));
         String actualMessage = exception.getMessage();
 
         assertThat(actualMessage, containsString(AN_ERROR_HAS_OCCURRED));

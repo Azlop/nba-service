@@ -30,7 +30,7 @@ class NbaServiceImplTest {
 
     @Test
     void givenGameId_whenGettingGame_thenShouldReturnOneGame() {
-        Match match = nbaService.getGame(264402);
+        Match match = nbaService.fetchGame(264402);
 
         assertEquals("2021-03-28 00:00:00 UTC", match.getDate());
         assertEquals("Raptors", match.getHomeTeam().getName());
@@ -43,7 +43,7 @@ class NbaServiceImplTest {
     void givenNonExistingGameId_whenGettingGame_thenShouldReturnNotFound() {
         int gameId = Integer.MAX_VALUE;
 
-        Exception exception = assertThrows(HttpClientErrorException.class, () -> nbaService.getGame(gameId));
+        Exception exception = assertThrows(HttpClientErrorException.class, () -> nbaService.fetchGame(gameId));
 
         String expectedMessage = "Game ID not found";
         String actualMessage = exception.getMessage();
@@ -55,7 +55,7 @@ class NbaServiceImplTest {
     void givenDate_whenGettingGames_thenShouldReturnAllGamesForTheDate() {
         String date = "2021-03-28";
 
-        List<Match> matches = nbaService.getAllGamesForDate(date);
+        List<Match> matches = nbaService.fetchAllGamesForDate(date);
 
         assertThat(matches, hasSize(4));
     }
@@ -64,7 +64,7 @@ class NbaServiceImplTest {
     void givenGameIdWithTwoPages_whenGettingPlayerStatistics_thenShouldReturnPlayersStatisticsForGame() {
         Integer gameId = 264405;
 
-        List<PlayerStatistics> players = nbaService.getPlayersFromGame(gameId);
+        List<PlayerStatistics> players = nbaService.fetchPlayersFromGame(gameId);
 
         assertThat(players, hasSize(30));
     }

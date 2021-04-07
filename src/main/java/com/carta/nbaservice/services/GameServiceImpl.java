@@ -56,12 +56,15 @@ public class GameServiceImpl implements GameService {
             game = saveGame(gameId);
         }
 
-        game.get().setComments(fetchComments(gameId));
-        List<GamePointsDto> points = this.gameRepository.getPlayersPointsByGameId(gameId);
-        game.get().setGamePoints(points);
+        game.get().setComments(getComments(gameId));
+        game.get().setGamePoints(getPlayersPointsByGameId(gameId));
 
         LOGGER.debug("Successfully got game information");
         return game.get();
+    }
+
+    private List<GamePointsDto> getPlayersPointsByGameId(int gameId) {
+        return this.gameRepository.getPlayersPointsByGameId(gameId);
     }
 
     @Override
@@ -70,17 +73,21 @@ public class GameServiceImpl implements GameService {
         List<Game> games = this.gameRepository.findByDate(date);
 
         if (games.isEmpty()) {
-            List<Match> matches = this.nbaService.getAllGamesForDate(date.toString());
+            List<Match> matches = this.nbaService.fetchAllGamesForDate(date.toString());
 
             for (Match match : matches) {
-                Game game = createGame(match);
+                Game game = transformToEntity(match);
                 this.gameRepository.save(game);
                 getAndSavePlayersPoints(game);
-                game.setComments(fetchComments(game.getGameId()));
-                List<GamePointsDto> points = this.gameRepository.getPlayersPointsByGameId(game.getGameId());
-                game.setGamePoints(points);
+                game.setComments(getComments(game.getGameId()));
+                game.setGamePoints(getPlayersPointsByGameId(game.getGameId()));
                 games.add(game);
             }
+        }
+
+        for (Game game : games) {
+            game.setComments(getComments(game.getGameId()));
+            game.setGamePoints(getPlayersPointsByGameId(game.getGameId()));
         }
 
         LOGGER.debug("Successfully got games");
@@ -88,8 +95,8 @@ public class GameServiceImpl implements GameService {
     }
 
     private Optional<Game> saveGame(int gameId) {
-        Match match = this.nbaService.getGame(gameId);
-        Optional<Game> game = Optional.of(createGame(match));
+        Match match = this.nbaService.fetchGame(gameId);
+        Optional<Game> game = Optional.of(transformToEntity(match));
         this.gameRepository.save(game.get());
         getAndSavePlayersPoints(game.get());
         return game;
@@ -97,8 +104,7 @@ public class GameServiceImpl implements GameService {
 
     private void getAndSavePlayersPoints(Game game) {
         LOGGER.debug("Getting players for game ID: {}", game.getGameId());
-        List<PlayerStatistics> playerStatistics = this.nbaService.getPlayersFromGame(game.getGameId());
-        LOGGER.debug("Successfully got players");
+        List<PlayerStatistics> playerStatistics = this.nbaService.fetchPlayersFromGame(game.getGameId());
 
         List<Player> players = new ArrayList<>();
         List<PlayerPoints> playerPoints = new ArrayList<>();
@@ -120,12 +126,12 @@ public class GameServiceImpl implements GameService {
         LOGGER.debug("Successfully saved players in database");
     }
 
-    private List<Comment> fetchComments(int gameId) {
+    private List<Comment> getComments(int gameId) {
         LOGGER.debug("Getting comments for game ID: {}", gameId);
         return this.commentRepository.findByGameIdOrderByTimestampDesc(gameId);
     }
 
-    private Game createGame(Match match) {
+    private Game transformToEntity(Match match) {
         Game game = new Game();
         game.setGameId(match.getId());
         game.setDate(parseDate(match.getDate()));
@@ -148,6 +154,6 @@ public class GameServiceImpl implements GameService {
             }
         }
         LOGGER.error("Date could not be parsed with the available patterns");
-        return null;
+        return LocalDate.now();
     }
 }

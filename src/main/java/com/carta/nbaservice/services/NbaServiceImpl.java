@@ -47,9 +47,9 @@ public class NbaServiceImpl implements NbaService {
     }
 
     @Override
-    public List<Match> getAllGamesForDate(String date) {
+    public List<Match> fetchAllGamesForDate(String date) {
         LOGGER.debug("Getting games for date: {}", date);
-        ResponseEntity<DataMatches> response = getDataMatchesResponseEntity(date, FIRST_PAGE);
+        ResponseEntity<DataMatches> response = fetchDataMatchesResponseEntity(date, FIRST_PAGE);
 
         List<Match> games = Objects.requireNonNull(response.getBody()).getGames();
         int pageNumber = Objects.requireNonNull(response.getBody()).getMetadata().getNextPage();
@@ -57,7 +57,7 @@ public class NbaServiceImpl implements NbaService {
 
         while (hasMorePlayers) {
             LOGGER.debug("Getting games for page: {}", pageNumber);
-            ResponseEntity<DataMatches> nextPageResponse = getDataMatchesResponseEntity(date, pageNumber);
+            ResponseEntity<DataMatches> nextPageResponse = fetchDataMatchesResponseEntity(date, pageNumber);
             games.addAll(Objects.requireNonNull(nextPageResponse.getBody()).getGames());
             pageNumber = Objects.requireNonNull(nextPageResponse.getBody()).getMetadata().getNextPage();
             if (pageNumber == 0) {
@@ -69,7 +69,7 @@ public class NbaServiceImpl implements NbaService {
     }
 
     @Override
-    public Match getGame(Integer gameId) {
+    public Match fetchGame(Integer gameId) {
         LOGGER.debug("Getting game for ID: {}", gameId);
         String singleGame = String.join("/", GAMES_URI, gameId.toString());
         ResponseEntity<Match> response = this.restTemplate.exchange(singleGame, HttpMethod.GET, this.httpEntity, Match.class);
@@ -77,9 +77,9 @@ public class NbaServiceImpl implements NbaService {
     }
 
     @Override
-    public List<PlayerStatistics> getPlayersFromGame(Integer gameId) {
+    public List<PlayerStatistics> fetchPlayersFromGame(Integer gameId) {
         LOGGER.debug("Getting players for game ID: {}", gameId);
-        ResponseEntity<DataPlayers> response = getDataPlayersResponseEntity(gameId, FIRST_PAGE);
+        ResponseEntity<DataPlayers> response = fetchDataPlayersResponseEntity(gameId, FIRST_PAGE);
 
         List<PlayerStatistics> playerStatistics = Objects.requireNonNull(response.getBody()).getPlayers();
         int pageNumber = Objects.requireNonNull(response.getBody()).getMetadata().getNextPage();
@@ -87,7 +87,7 @@ public class NbaServiceImpl implements NbaService {
 
         while (hasMorePlayers) {
             LOGGER.debug("Getting players for page {}", pageNumber);
-            ResponseEntity<DataPlayers> nextPageResponse = getDataPlayersResponseEntity(gameId, pageNumber);
+            ResponseEntity<DataPlayers> nextPageResponse = fetchDataPlayersResponseEntity(gameId, pageNumber);
             playerStatistics.addAll(Objects.requireNonNull(nextPageResponse.getBody()).getPlayers());
             pageNumber = Objects.requireNonNull(nextPageResponse.getBody()).getMetadata().getNextPage();
             if (pageNumber == 0) {
@@ -98,12 +98,12 @@ public class NbaServiceImpl implements NbaService {
         return playerStatistics;
     }
 
-    private ResponseEntity<DataPlayers> getDataPlayersResponseEntity(Integer gameId, int firstPage) {
+    private ResponseEntity<DataPlayers> fetchDataPlayersResponseEntity(Integer gameId, int firstPage) {
         String singleGameUrl = STATISTICS_URI + String.format("?game_ids[]=%d", gameId) + String.format("&page=%d", firstPage);
         return this.restTemplate.exchange(singleGameUrl, HttpMethod.GET, this.httpEntity, DataPlayers.class);
     }
 
-    private ResponseEntity<DataMatches> getDataMatchesResponseEntity(String date, int pageNumber) {
+    private ResponseEntity<DataMatches> fetchDataMatchesResponseEntity(String date, int pageNumber) {
         String gamesForDate = GAMES_URI + String.format("?dates[]=\"%s\"", date) + String.format("&page=%d", pageNumber);
         return this.restTemplate.exchange(gamesForDate, HttpMethod.GET, this.httpEntity, DataMatches.class);
     }
