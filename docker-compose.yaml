@@ -9,7 +9,7 @@ services:
     ports:
       - 8080:8080
     environment:
-      NBA_API_KEY: NTg3ZTM5MjU2N21zaDEwNjBmZWVkMjAyN2NkYnAxY2Q2YTdqc24xNjMzYmM1ZGU3MmM=
+      NBA_API_KEY: 587e392567msh1060feed2027cdbp1cd6a7jsn1633bc5de72c
       MYSQL_HOST: mysql
       MYSQL_PORT: 3306
       MYSQL_DATABASE: games
@@ -35,3 +35,4 @@ services:
 networks:
   nba-service:
     driver: bridge
+    external: true

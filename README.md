@@ -48,3 +48,12 @@ curl -i -X POST http://localhost:8080/comments -d '{"gameId":264402,"text":"It w
 curl -i -X PATCH http://localhost:8080/comments/<comment id> -d '{"text":"It was bad!"}"'
 curl -i -X DELETE http://localhost:8080/comments/<comment id>
 ```
+
+Change log level (for instance, DEBUG, INFO):
+```shell
+curl -i -X GET http://localhost:8080/actuator/loggers/com.carta.nbaservice -d '{"configuredLevel": "<log level>"}'
+```
+
+## Known limitations
+* Caching game information on a database only happens when listing games for a date.
+* View a single game information does not cache on a database, so commenting a game only works after listing games to get the game IDs.
