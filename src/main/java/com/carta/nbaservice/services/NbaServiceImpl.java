@@ -1,5 +1,6 @@
 package com.carta.nbaservice.services;
 
+import java.util.Base64;
 import java.util.List;
 import java.util.Objects;
 
@@ -41,7 +42,8 @@ public class NbaServiceImpl implements NbaService {
     public NbaServiceImpl(RestTemplateBuilder restTemplateBuilder, AppConfig appConfig) {
         this.restTemplate = restTemplateBuilder.errorHandler(new RestTemplateResponseErrorHandler()).build();
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.set(HEADER_KEY, appConfig.getKey());
+        byte[] decodedKey = Base64.getDecoder().decode(appConfig.getKey());
+        httpHeaders.set(HEADER_KEY, new String(decodedKey));
         httpHeaders.set(HEADER_HOST, HOST);
         this.httpEntity = new HttpEntity<>(httpHeaders);
     }
