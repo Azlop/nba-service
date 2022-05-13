@@ -7,6 +7,5 @@ import com.carta.nbaservice.entities.PlayerStatistics;
 
 public interface NbaService {
     List<Match> fetchAllGamesForDate(String date);
-    Match fetchGame(Integer gameId);
     List<PlayerStatistics> fetchPlayersFromGame(Integer gameId);
 }

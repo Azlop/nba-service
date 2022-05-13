@@ -1,0 +1,119 @@
+{
+  "data": [
+    {
+      "id": 5006674,
+      "ast": 3,
+      "blk": 0,
+      "dreb": 5,
+      "fg3_pct": 25.0,
+      "fg3a": 4,
+      "fg3m": 1,
+      "fg_pct": 38.5,
+      "fga": 13,
+      "fgm": 5,
+      "ft_pct": 33.3,
+      "fta": 3,
+      "ftm": 1,
+      "game": {
+        "id": 264404,
+        "date": "2021-03-28T00:00:00.000Z",
+        "home_team_id": 8,
+        "home_team_score": 126,
+        "period": 4,
+        "postseason": false,
+        "season": 2020,
+        "status": "Final",
+        "time": "",
+        "visitor_team_id": 1,
+        "visitor_team_score": 102
+      },
+      "min": "32:11",
+      "oreb": 1,
+      "pf": 1,
+      "player": {
+        "id": 31,
+        "first_name": "Will",
+        "height_feet": 6,
+        "height_inches": 6,
+        "last_name": "Barton",
+        "position": "G",
+        "team_id": 8,
+        "weight_pounds": 190
+      },
+      "pts": 12,
+      "reb": 6,
+      "stl": 1,
+      "team": {
+        "id": 8,
+        "abbreviation": "DEN",
+        "city": "Denver",
+        "conference": "West",
+        "division": "Northwest",
+        "full_name": "Denver Nuggets",
+        "name": "Nuggets"
+      },
+      "turnover": 2
+    },
+    {
+      "id": 5006675,
+      "ast": 4,
+      "blk": 1,
+      "dreb": 2,
+      "fg3_pct": 25.0,
+      "fg3a": 4,
+      "fg3m": 1,
+      "fg_pct": 63.6,
+      "fga": 11,
+      "fgm": 7,
+      "ft_pct": 66.7,
+      "fta": 3,
+      "ftm": 2,
+      "game": {
+        "id": 264404,
+        "date": "2021-03-28T00:00:00.000Z",
+        "home_team_id": 8,
+        "home_team_score": 126,
+        "period": 4,
+        "postseason": false,
+        "season": 2020,
+        "status": "Final",
+        "time": "",
+        "visitor_team_id": 1,
+        "visitor_team_score": 102
+      },
+      "min": "30:56",
+      "oreb": 0,
+      "pf": 1,
+      "player": {
+        "id": 335,
+        "first_name": "Jamal",
+        "height_feet": 6,
+        "height_inches": 4,
+        "last_name": "Murray",
+        "position": "G",
+        "team_id": 8,
+        "weight_pounds": 207
+      },
+      "pts": 17,
+      "reb": 2,
+      "stl": 1,
+      "team": {
+        "id": 8,
+        "abbreviation": "DEN",
+        "city": "Denver",
+        "conference": "West",
+        "division": "Northwest",
+        "full_name": "Denver Nuggets",
+        "name": "Nuggets"
+      },
+      "turnover": 4
+    }
+  ],
+  "meta": {
+    "total_pages": 2,
+    "current_page": 2,
+    "next_page": null,
+    "per_page": 25,
+    "total_count": 27
+  }
+}

@@ -18,7 +18,12 @@ spring:
 
 freenba:
   api:
+    host: free-nba.p.rapidapi.com
+    base-url: https://${freenba.api.host}
     key: ${NBA_API_KEY}
+    headers:
+      x-rapidapi-host: ${freenba.api.host}
+      x-rapidapi-key: ${NBA_API_KEY}
 
 management:
   endpoints:

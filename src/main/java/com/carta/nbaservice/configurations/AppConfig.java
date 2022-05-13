@@ -1,27 +1,18 @@
 package com.carta.nbaservice.configurations;
 
-import org.springframework.beans.factory.InitializingBean;
+import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.Map;
+
 @Configuration
 @ConfigurationProperties(prefix = "freenba.api")
-public class AppConfig implements InitializingBean {
+@Data
+public class AppConfig {
 
+    private String host;
+    private String baseUrl;
     private String key;
-
-    @Override
-    public void afterPropertiesSet() {
-        if (this.key == null) {
-            throw new IllegalArgumentException("freenba.api.key property should be set");
-        }
-    }
-
-    public String getKey() {
-        return key;
-    }
-
-    public void setKey(String key) {
-        this.key = key;
-    }
+    private Map<String, String> headers;
 }

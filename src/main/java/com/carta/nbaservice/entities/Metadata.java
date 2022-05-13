@@ -1,7 +1,17 @@
 package com.carta.nbaservice.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
+@Data
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@RequiredArgsConstructor
+@AllArgsConstructor
 public class Metadata {
 
     @JsonProperty("total_pages")
@@ -14,52 +24,4 @@ public class Metadata {
     private int perPage;
     @JsonProperty("total_count")
     private int totalCount;
-
-    public Metadata(int totalPages, int currentPage, int nextPage, int perPage, int totalCount) {
-        this.totalPages = totalPages;
-        this.currentPage = currentPage;
-        this.nextPage = nextPage;
-        this.perPage = perPage;
-        this.totalCount = totalCount;
-    }
-
-    public int getTotalPages() {
-        return totalPages;
-    }
-
-    public void setTotalPages(int totalPages) {
-        this.totalPages = totalPages;
-    }
-
-    public int getCurrentPage() {
-        return currentPage;
-    }
-
-    public void setCurrentPage(int currentPage) {
-        this.currentPage = currentPage;
-    }
-
-    public int getNextPage() {
-        return nextPage;
-    }
-
-    public void setNextPage(int nextPage) {
-        this.nextPage = nextPage;
-    }
-
-    public int getPerPage() {
-        return perPage;
-    }
-
-    public void setPerPage(int perPage) {
-        this.perPage = perPage;
-    }
-
-    public int getTotalCount() {
-        return totalCount;
-    }
-
-    public void setTotalCount(int totalCount) {
-        this.totalCount = totalCount;
-    }
 }

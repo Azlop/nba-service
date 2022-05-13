@@ -1,0 +1,127 @@
+{
+  "data": [
+    {
+      "id": 264402,
+      "date": "2021-03-28T00:00:00.000Z",
+      "home_team": {
+        "id": 28,
+        "abbreviation": "TOR",
+        "city": "Toronto",
+        "conference": "East",
+        "division": "Atlantic",
+        "full_name": "Toronto Raptors",
+        "name": "Raptors"
+      },
+      "home_team_score": 117,
+      "period": 4,
+      "postseason": false,
+      "season": 2020,
+      "status": "Final",
+      "time": "",
+      "visitor_team": {
+        "id": 25,
+        "abbreviation": "POR",
+        "city": "Portland",
+        "conference": "West",
+        "division": "Northwest",
+        "full_name": "Portland Trail Blazers",
+        "name": "Trail Blazers"
+      },
+      "visitor_team_score": 122
+    },
+    {
+      "id": 264405,
+      "date": "2021-03-28T00:00:00.000Z",
+      "home_team": {
+        "id": 4,
+        "abbreviation": "CHA",
+        "city": "Charlotte",
+        "conference": "East",
+        "division": "Southeast",
+        "full_name": "Charlotte Hornets",
+        "name": "Hornets"
+      },
+      "home_team_score": 97,
+      "period": 5,
+      "postseason": false,
+      "season": 2020,
+      "status": "Final",
+      "time": "",
+      "visitor_team": {
+        "id": 24,
+        "abbreviation": "PHX",
+        "city": "Phoenix",
+        "conference": "West",
+        "division": "Pacific",
+        "full_name": "Phoenix Suns",
+        "name": "Suns"
+      },
+      "visitor_team_score": 101
+    },
+    {
+      "id": 264404,
+      "date": "2021-03-28T00:00:00.000Z",
+      "home_team": {
+        "id": 8,
+        "abbreviation": "DEN",
+        "city": "Denver",
+        "conference": "West",
+        "division": "Northwest",
+        "full_name": "Denver Nuggets",
+        "name": "Nuggets"
+      },
+      "home_team_score": 126,
+      "period": 4,
+      "postseason": false,
+      "season": 2020,
+      "status": "Final",
+      "time": "",
+      "visitor_team": {
+        "id": 1,
+        "abbreviation": "ATL",
+        "city": "Atlanta",
+        "conference": "East",
+        "division": "Southeast",
+        "full_name": "Atlanta Hawks",
+        "name": "Hawks"
+      },
+      "visitor_team_score": 102
+    },
+    {
+      "id": 264403,
+      "date": "2021-03-28T00:00:00.000Z",
+      "home_team": {
+        "id": 14,
+        "abbreviation": "LAL",
+        "city": "Los Angeles",
+        "conference": "West",
+        "division": "Pacific",
+        "full_name": "Los Angeles Lakers",
+        "name": "Lakers"
+      },
+      "home_team_score": 96,
+      "period": 4,
+      "postseason": false,
+      "season": 2020,
+      "status": "Final",
+      "time": "",
+      "visitor_team": {
+        "id": 22,
+        "abbreviation": "ORL",
+        "city": "Orlando",
+        "conference": "East",
+        "division": "Southeast",
+        "full_name": "Orlando Magic",
+        "name": "Magic"
+      },
+      "visitor_team_score": 93
+    }
+  ],
+  "meta": {
+    "total_pages": 1,
+    "current_page": 1,
+    "next_page": null,
+    "per_page": 25,
+    "total_count": 4
+  }
+}

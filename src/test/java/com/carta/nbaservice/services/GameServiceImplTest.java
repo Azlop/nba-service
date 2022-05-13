@@ -59,14 +59,12 @@ class GameServiceImplTest {
 
     @Test
     void givenGameId_whenGettingGameInfo_thenGameIsFound() {
-        String datePatternWhenGettingGamesByDate = "2021-03-28 00:00:00 UTC";
         Comment comment = new Comment(GAME_ID, COMMENT_TEXT);
         List<PlayerStatistics> playerStatistics = new ArrayList<>();
         playerStatistics.add(createDummyPlayerStatisticsBasedOnFreeNBA());
         Game game = new Game(GAME_ID, LocalDate.of(2021, 3, 28), "homeTeam", "awayTeam", 100, 90);
 
         when(this.gameRepository.findByGameId(GAME_ID)).thenReturn(Optional.of(game));
-        when(this.nbaService.fetchGame(GAME_ID)).thenReturn(createDummyGameBasedOnFreeNBA(datePatternWhenGettingGamesByDate));
         when(this.commentRepository.findByGameIdOrderByTimestampDesc(GAME_ID)).thenReturn(Collections.singletonList(comment));
         when(this.nbaService.fetchPlayersFromGame(GAME_ID)).thenReturn(playerStatistics);
         when(this.playerRepository.saveAll(anyList())).thenReturn(null);
