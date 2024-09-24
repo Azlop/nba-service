@@ -42,8 +42,15 @@ class CommentServiceImplTest {
 
     @Test
     void givenExistingGameIdAndCommentText_whenAddingComment_thenShouldFindComment() {
-        Comment comment = new Comment(GAME_ID, COMMENT_TEXT);
-        Game game = new Game(GAME_ID, LocalDate.parse("2021-03-28"), "homeTeam", "awayTeam", 50, 51);
+        Comment comment = new Comment(null, GAME_ID, COMMENT_TEXT, null);
+        Game game = Game.builder()
+            .gameId(GAME_ID)
+            .date(LocalDate.parse("2021-03-28"))
+            .homeTeamName("homeTeam")
+            .awayTeamName("awayTeam")
+            .homeTeamScore(50)
+            .awayTeamScore(51)
+            .build();
 
         when(gameRepository.findByGameId(GAME_ID)).thenReturn(Optional.of(game));
         when(commentRepository.save(any(Comment.class))).thenReturn(comment);
@@ -67,8 +74,7 @@ class CommentServiceImplTest {
 
     @Test
     void givenExistingCommentId_whenUpdatingComment_thenShouldFindAndChangeComment() {
-        Comment comment = new Comment(GAME_ID, COMMENT_TEXT);
-        comment.setCommentId(COMMENT_ID);
+        Comment comment = new Comment(COMMENT_ID, GAME_ID, COMMENT_TEXT, null);
 
         when(commentRepository.findById(comment.getCommentId())).thenReturn(Optional.of(comment));
 
@@ -79,9 +85,7 @@ class CommentServiceImplTest {
 
     @Test
     void givenValidCommentId_whenDeletingComment_thenShouldFindAndDeleteComment() {
-        Comment comment = new Comment(GAME_ID, COMMENT_TEXT);
-        comment.setCommentId(COMMENT_ID);
-
+        Comment comment = new Comment(COMMENT_ID, GAME_ID, COMMENT_TEXT, null);
         when(commentRepository.findById(comment.getCommentId())).thenReturn(Optional.of(comment));
 
         commentServiceImpl.deleteComment(COMMENT_ID);
@@ -91,9 +95,6 @@ class CommentServiceImplTest {
 
     @Test
     void givenInvalidCommentId_whenDeletingComment_thenThrowCommentNotFoundException() {
-        Comment comment = new Comment(GAME_ID, COMMENT_TEXT);
-        comment.setCommentId(COMMENT_ID);
-
         when(commentRepository.findById(anyInt())).thenReturn(Optional.empty());
 
         Exception exception = assertThrows(CommentNotFoundException.class, () ->

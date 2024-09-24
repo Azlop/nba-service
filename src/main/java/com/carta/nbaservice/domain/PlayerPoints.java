@@ -1,7 +1,9 @@
 package com.carta.nbaservice.domain;
 
-import java.io.Serializable;
-import java.util.Objects;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -9,11 +11,17 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
+import java.io.Serializable;
 
 @Entity
+@Data
+@AllArgsConstructor
+@EqualsAndHashCode
+@NoArgsConstructor
 public class PlayerPoints implements Serializable {
 
-    @EmbeddedId private GamePlayerPK gamePlayerPK;
+    @EmbeddedId
+    private GamePlayerPK gamePlayerPK;
 
     @ManyToOne
     @MapsId("gameId")
@@ -27,53 +35,4 @@ public class PlayerPoints implements Serializable {
 
     @Column
     private int points;
-
-    public PlayerPoints(GamePlayerPK gamePlayerPK, Game game, Player player, int points) {
-        this.gamePlayerPK = gamePlayerPK;
-        this.game = game;
-        this.player = player;
-        this.points = points;
-    }
-
-    public PlayerPoints() {}
-
-    public Game getGame() {
-        return game;
-    }
-
-    public void setGame(Game game) {
-        this.game = game;
-    }
-
-    public Player getPlayer() {
-        return player;
-    }
-
-    public void setPlayer(Player player) {
-        this.player = player;
-    }
-
-    public int getPoints() {
-        return points;
-    }
-
-    public void setPoints(int points) {
-        this.points = points;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
-        PlayerPoints that = (PlayerPoints) o;
-        return points == that.points && Objects.equals(gamePlayerPK, that.gamePlayerPK) && Objects.equals(game, that.game) && Objects
-                .equals(player, that.player);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(gamePlayerPK, game, player, points);
-    }
 }

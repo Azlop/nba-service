@@ -1,17 +1,5 @@
 package com.carta.nbaservice.services;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.carta.nbaservice.domain.Comment;
 import com.carta.nbaservice.domain.Game;
 import com.carta.nbaservice.domain.GamePlayerPK;
@@ -25,8 +13,20 @@ import com.carta.nbaservice.repos.CommentRepository;
 import com.carta.nbaservice.repos.GameRepository;
 import com.carta.nbaservice.repos.PlayerPointsRepository;
 import com.carta.nbaservice.repos.PlayerRepository;
+import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class GameServiceImpl implements GameService {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(GameServiceImpl.class);
@@ -36,16 +36,6 @@ public class GameServiceImpl implements GameService {
     private final CommentRepository commentRepository;
     private final PlayerRepository playerRepository;
     private final PlayerPointsRepository playerPointsRepository;
-
-    @Autowired
-    public GameServiceImpl(NbaService nbaService, GameRepository gameRepository, CommentRepository commentRepository, PlayerRepository playerRepository,
-        PlayerPointsRepository playerPointsRepository) {
-        this.nbaService = nbaService;
-        this.gameRepository = gameRepository;
-        this.commentRepository = commentRepository;
-        this.playerRepository = playerRepository;
-        this.playerPointsRepository = playerPointsRepository;
-    }
 
     @Override
     public Game getGame(int gameId) {
@@ -142,14 +132,14 @@ public class GameServiceImpl implements GameService {
     }
 
     private List<GamePointsDto> getPlayersPointsByGameId(int gameId) {
-        return this.gameRepository.getPlayersPointsByGameId(gameId);
+        return gameRepository.getPlayersPointsByGameId(gameId);
     }
 
     private Game verifyGameId(int gameId) {
         LOGGER.debug("Verifying existence of game for ID: {}", gameId);
-        return this.gameRepository.findByGameId(gameId).orElseThrow(() -> {
+        return gameRepository.findByGameId(gameId).orElseThrow(() -> {
             LOGGER.error("Game ID not found: {}", gameId);
-            throw new GameNotFoundException(gameId);
+            return new GameNotFoundException(gameId);
         });
     }
 }

@@ -49,7 +49,7 @@ class NbaServiceImplTest {
         nbaService = new NbaServiceImpl(restTemplate, appConfig);
         HttpHeaders httpHeaders = new HttpHeaders();
         appConfig.getHeaders().forEach(httpHeaders::set);
-        this.httpEntity = new HttpEntity<>(httpHeaders);
+        httpEntity = new HttpEntity<>(httpHeaders);
     }
 
     @Test

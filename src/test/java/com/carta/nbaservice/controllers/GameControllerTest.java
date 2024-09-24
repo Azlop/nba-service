@@ -1,16 +1,8 @@
 package com.carta.nbaservice.controllers;
 
-import static org.hamcrest.Matchers.hasSize;
-import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
+import com.carta.nbaservice.domain.Game;
+import com.carta.nbaservice.domain.Player;
+import com.carta.nbaservice.services.GameService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -18,17 +10,19 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.carta.nbaservice.domain.Comment;
-import com.carta.nbaservice.domain.Game;
-import com.carta.nbaservice.domain.Player;
-import com.carta.nbaservice.services.GameService;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(GameController.class)
 class GameControllerTest {
 
     public static final int GAME_ID = 1;
-    public static final int COMMENT_ID = 1;
-    public static final String COMMENT_TEXT = "It was bad!";
     public static final String PLAYER_FIRST_NAME = "James";
     public static final String PLAYER_LAST_NAME = "Harden";
     public static final String GAME_DATE = "2021-03-28";
@@ -59,8 +53,8 @@ class GameControllerTest {
                 .andExpect(jsonPath("$.awayTeamName").value(AWAY_TEAM_NAME))
                 .andExpect(jsonPath("$.homeTeamScore").value(HOME_TEAM_SCORE))
                 .andExpect(jsonPath("$.awayTeamScore").value(AWAY_TEAM_SCORE))
-                .andExpect(jsonPath("$.comments").value(hasSize(0)))
-                .andExpect(jsonPath("$.gamePoints").value(hasSize(0)));
+                .andExpect(jsonPath("$.comments").isEmpty())
+                .andExpect(jsonPath("$.gamePoints").isEmpty());
     }
 
     @Test
@@ -76,24 +70,18 @@ class GameControllerTest {
     }
 
     private Game createGame() {
-        Comment comment = new Comment(GAME_ID, COMMENT_TEXT);
-        comment.setCommentId(COMMENT_ID);
-
         Player player = new Player();
         player.setFirstName(PLAYER_FIRST_NAME);
         player.setLastName(PLAYER_LAST_NAME);
 
-        Game game = new Game();
-        game.setGameId(GAME_ID);
-        game.setDate(LocalDate.parse(GAME_DATE));
-        game.setHomeTeamName(HOME_TEAM_NAME);
-        game.setAwayTeamName(AWAY_TEAM_NAME);
-        game.setHomeTeamScore(HOME_TEAM_SCORE);
-        game.setAwayTeamScore(AWAY_TEAM_SCORE);
-        game.setComments(Collections.emptyList());
-        game.setGamePoints(Collections.emptyList());
-
-        return game;
+        return Game.builder()
+            .gameId(GAME_ID)
+            .date(LocalDate.parse(GAME_DATE))
+            .homeTeamName(HOME_TEAM_NAME)
+            .awayTeamName(AWAY_TEAM_NAME)
+            .homeTeamScore(HOME_TEAM_SCORE)
+            .awayTeamScore(AWAY_TEAM_SCORE)
+            .build();
     }
 
 }
