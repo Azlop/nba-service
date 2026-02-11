@@ -16,15 +16,15 @@ public class RestTemplateResponseErrorHandler implements ResponseErrorHandler {
 
     @Override
     public boolean hasError(ClientHttpResponse clientHttpResponse) throws IOException {
-        return (clientHttpResponse.getStatusCode().series() == HttpStatus.Series.CLIENT_ERROR
-                || clientHttpResponse.getStatusCode().series() == HttpStatus.Series.SERVER_ERROR);
+        return (clientHttpResponse.getStatusCode().value() == HttpStatus.Series.CLIENT_ERROR.value()
+                || clientHttpResponse.getStatusCode().value() == HttpStatus.Series.SERVER_ERROR.value());
     }
 
     @Override
     public void handleError(ClientHttpResponse clientHttpResponse) throws IOException {
-        if (clientHttpResponse.getStatusCode().series() == HttpStatus.Series.SERVER_ERROR) {
+        if (clientHttpResponse.getStatusCode().value() == HttpStatus.Series.SERVER_ERROR.value()) {
             throw new HttpServerErrorException(clientHttpResponse.getStatusCode(), SERVER_ERROR_MESSAGE);
-        } else if (clientHttpResponse.getStatusCode().series() == HttpStatus.Series.CLIENT_ERROR) {
+        } else if (clientHttpResponse.getStatusCode().value() == HttpStatus.Series.CLIENT_ERROR.value()) {
             if (clientHttpResponse.getStatusCode() == HttpStatus.NOT_FOUND) {
                 throw new HttpClientErrorException(clientHttpResponse.getStatusCode(), GAME_ID_NOT_FOUND);
             } else {

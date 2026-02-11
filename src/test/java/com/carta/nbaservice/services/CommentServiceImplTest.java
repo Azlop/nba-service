@@ -43,14 +43,13 @@ class CommentServiceImplTest {
     @Test
     void givenExistingGameIdAndCommentText_whenAddingComment_thenShouldFindComment() {
         Comment comment = new Comment(null, GAME_ID, COMMENT_TEXT, null);
-        Game game = Game.builder()
-            .gameId(GAME_ID)
-            .date(LocalDate.parse("2021-03-28"))
-            .homeTeamName("homeTeam")
-            .awayTeamName("awayTeam")
-            .homeTeamScore(50)
-            .awayTeamScore(51)
-            .build();
+        Game game = new Game();
+        game.setGameId(GAME_ID);
+        game.setDate(LocalDate.parse("2021-03-28"));
+        game.setHomeTeamName("homeTeam");
+        game.setAwayTeamName("awayTeam");
+        game.setHomeTeamScore(50);
+        game.setAwayTeamScore(51);
 
         when(gameRepository.findByGameId(GAME_ID)).thenReturn(Optional.of(game));
         when(commentRepository.save(any(Comment.class))).thenReturn(comment);

@@ -74,14 +74,15 @@ class GameControllerTest {
         player.setFirstName(PLAYER_FIRST_NAME);
         player.setLastName(PLAYER_LAST_NAME);
 
-        return Game.builder()
-            .gameId(GAME_ID)
-            .date(LocalDate.parse(GAME_DATE))
-            .homeTeamName(HOME_TEAM_NAME)
-            .awayTeamName(AWAY_TEAM_NAME)
-            .homeTeamScore(HOME_TEAM_SCORE)
-            .awayTeamScore(AWAY_TEAM_SCORE)
-            .build();
+        Game game = new Game();
+        game.setGameId(GAME_ID);
+        game.setDate(LocalDate.parse(GAME_DATE));
+        game.setHomeTeamName(HOME_TEAM_NAME);
+        game.setAwayTeamName(AWAY_TEAM_NAME);
+        game.setHomeTeamScore(HOME_TEAM_SCORE);
+        game.setAwayTeamScore(AWAY_TEAM_SCORE);
+
+        return game;
     }
 
 }

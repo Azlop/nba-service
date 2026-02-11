@@ -37,14 +37,14 @@ public class CommentController {
     @ResponseStatus(HttpStatus.CREATED)
     public Comment addCommentToGame(@RequestBody @Validated CommentDto commentDto) {
         LOGGER.info("Accessing POST Comment endpoint");
-        return commentService.addCommentToGame(commentDto.getGameId(), commentDto.getText());
+        return commentService.addCommentToGame(commentDto.gameId(), commentDto.text());
     }
 
     @PatchMapping("/{commentId}")
     @ResponseStatus(HttpStatus.OK)
     public Comment modifyCommentOnGame(@PathVariable(value = "commentId") Integer commentId, @RequestBody @Validated CommentDto commentDto) {
         LOGGER.info("Accessing PATCH Comment endpoint for ID: {}" , commentId);
-        return commentService.modifyCommentOnGame(commentId, commentDto.getText());
+        return commentService.modifyCommentOnGame(commentId, commentDto.text());
     }
 
     @DeleteMapping("/{commentId}")

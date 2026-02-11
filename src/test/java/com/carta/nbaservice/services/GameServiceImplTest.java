@@ -62,14 +62,13 @@ class GameServiceImplTest {
         Comment comment = new Comment(null, GAME_ID, COMMENT_TEXT, null);
         List<PlayerStatistics> playerStatistics = new ArrayList<>();
         playerStatistics.add(createDummyPlayerStatisticsBasedOnFreeNBA());
-        Game game = Game.builder()
-            .gameId(GAME_ID)
-            .date(LocalDate.of(2021, 3, 28))
-            .homeTeamName("homeTeam")
-            .awayTeamName("awayTeam")
-            .homeTeamScore(100)
-            .awayTeamScore(90)
-            .build();
+        Game game = new Game();
+        game.setGameId(GAME_ID);
+        game.setDate(LocalDate.of(2021, 3, 28));
+        game.setHomeTeamName("homeTeam");
+        game.setAwayTeamName("awayTeam");
+        game.setHomeTeamScore(100);
+        game.setAwayTeamScore(90);
 
         when(gameRepository.findByGameId(GAME_ID)).thenReturn(Optional.of(game));
         when(commentRepository.findByGameIdOrderByTimestampDesc(GAME_ID)).thenReturn(Collections.singletonList(comment));
