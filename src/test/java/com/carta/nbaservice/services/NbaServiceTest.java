@@ -27,7 +27,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 
 @ExtendWith(MockitoExtension.class)
-class NbaServiceImplTest {
+class NbaServiceTest {
 
     private NbaService nbaService;
     @Mock
@@ -42,7 +42,7 @@ class NbaServiceImplTest {
         appConfig.setBaseUrl("https://localhost");
         appConfig.setKey("key");
         appConfig.setHeaders(Map.of("headerKey", "headerValue"));
-        nbaService = new NbaServiceImpl(restTemplate, appConfig);
+        nbaService = new NbaService(restTemplate, appConfig);
         HttpHeaders httpHeaders = new HttpHeaders();
         appConfig.getHeaders().forEach(httpHeaders::set);
         httpEntity = new HttpEntity<>(httpHeaders);

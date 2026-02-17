@@ -1,17 +1,15 @@
 package com.carta.nbaservice.domain;
 
 import com.carta.nbaservice.dtos.GamePointsDto;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import jakarta.persistence.*;
+import lombok.Data;
+
 import java.time.LocalDate;
 import java.util.List;
 
 @Entity
 @Table(name = "game")
 @Data
-@NoArgsConstructor
 public class Game {
 
     @Id

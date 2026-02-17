@@ -33,7 +33,7 @@ import com.carta.nbaservice.repos.PlayerPointsRepository;
 import com.carta.nbaservice.repos.PlayerRepository;
 
 @ExtendWith(SpringExtension.class)
-class GameServiceImplTest {
+class GameServiceTest {
 
     public static final int GAME_ID = 1;
     private static final String GAME_DATE = "2021-03-28";
@@ -43,7 +43,7 @@ class GameServiceImplTest {
     private NbaService nbaService;
 
     @InjectMocks
-    private GameServiceImpl gameServiceImpl;
+    private GameService gameService;
 
     @Mock
     private GameRepository gameRepository;
@@ -59,7 +59,9 @@ class GameServiceImplTest {
 
     @Test
     void givenGameId_whenGettingGameInfo_thenGameIsFound() {
-        Comment comment = new Comment(null, GAME_ID, COMMENT_TEXT, null);
+        Comment comment = new Comment();
+        comment.setGameId(GAME_ID);
+        comment.setText(COMMENT_TEXT);
         List<PlayerStatistics> playerStatistics = new ArrayList<>();
         playerStatistics.add(createDummyPlayerStatisticsBasedOnFreeNBA());
         Game game = new Game();
@@ -76,7 +78,7 @@ class GameServiceImplTest {
         when(playerRepository.saveAll(anyList())).thenReturn(null);
         when(playerPointsRepository.saveAll(anyList())).thenReturn(null);
 
-        Game gameResult = gameServiceImpl.getGame(GAME_ID);
+        Game gameResult = gameService.getGame(GAME_ID);
 
         assertThat(gameResult.getGameId()).isEqualTo(GAME_ID);
     }
@@ -85,7 +87,7 @@ class GameServiceImplTest {
     void givenGameIdNotInDB_whenGettingGameInfo_thenThrowGameNotFoundException() {
         when(gameRepository.findByGameId(GAME_ID)).thenReturn(Optional.empty());
         Exception exception = assertThrows(GameNotFoundException.class, () ->
-                gameServiceImpl.getGame(GAME_ID));
+                gameService.getGame(GAME_ID));
 
         String expectedMessage = "Game ID does not exist";
         String actualMessage = exception.getMessage();
@@ -96,7 +98,9 @@ class GameServiceImplTest {
     @Test
     void givenGameIdWithInvalidDate_whenGettingGameInfo_thenDateIsNotNull() {
         String invalidDate = "2021-Mar-28 0:00:00 UTC";
-        Comment comment = new Comment(null, GAME_ID, COMMENT_TEXT, null);
+        Comment comment = new Comment();
+        comment.setGameId(GAME_ID);
+        comment.setText(COMMENT_TEXT);
         List<PlayerStatistics> playerStatistics = new ArrayList<>();
         playerStatistics.add(createDummyPlayerStatisticsBasedOnFreeNBA());
         List<Match> matches = new ArrayList<>();
@@ -109,7 +113,7 @@ class GameServiceImplTest {
         when(playerRepository.saveAll(anyList())).thenReturn(null);
         when(playerPointsRepository.saveAll(anyList())).thenReturn(null);
 
-        List<Game> gameResult = gameServiceImpl.listGames(LocalDate.parse(GAME_DATE));
+        List<Game> gameResult = gameService.listGames(LocalDate.parse(GAME_DATE));
 
         assertNotNull(gameResult.get(0).getDate());
     }
@@ -127,7 +131,7 @@ class GameServiceImplTest {
         when(nbaService.fetchAllGamesForDate(GAME_DATE)).thenReturn(matches);
         when(nbaService.fetchPlayersFromGame(GAME_ID)).thenReturn(playerStatistics);
 
-        List<Game> games = gameServiceImpl.listGames(LocalDate.parse(GAME_DATE));
+        List<Game> games = gameService.listGames(LocalDate.parse(GAME_DATE));
 
         assertNotNull(games);
         assertEquals(3, games.size());
@@ -136,19 +140,40 @@ class GameServiceImplTest {
     private Match createDummyGameBasedOnFreeNBA(String date) {
         Team homeTeam = createDummyTeamBasedOnFreeNBA();
         Team visitorTeam = createDummyTeamBasedOnFreeNBA();
-        return new Match(GAME_ID, date, homeTeam, 100, visitorTeam, 90);
+        Match match = new Match();
+        match.setHomeTeam(homeTeam);
+        match.setVisitorTeam(visitorTeam);
+        match.setDate(date);
+        match.setHomeTeamScore(100);
+        match.setVisitorTeamScore(90);
+        match.setId(GAME_ID);
+        return match;
     }
 
     private PlayerStatistics createDummyPlayerStatisticsBasedOnFreeNBA() {
         Player player = createDummyPlayerBasedOnFreeNBA();
-        return new PlayerStatistics( player, 18);
+        PlayerStatistics playerStatistics = new PlayerStatistics();
+        playerStatistics.setPlayer(player);
+        playerStatistics.setPts(18);
+        return playerStatistics;
     }
 
     private Team createDummyTeamBasedOnFreeNBA() {
-        return new Team(1, "ht1", "home", "", "north", "hometeam1", "hometeam1");
+        Team team = new Team();
+        team.setId(GAME_ID);
+        team.setAbbreviation("ht1");
+        team.setCity("home");
+        team.setConference("");
+        team.setDivision("north");
+        team.setFullName("hometeam1");
+        team.setName("hometeam1");
+        return team;
     }
 
     private Player createDummyPlayerBasedOnFreeNBA() {
-        return new Player("first", "last");
+        Player player = new Player();
+        player.setFirstName("first");
+        player.setLastName("last");
+        return player;
     }
 }
