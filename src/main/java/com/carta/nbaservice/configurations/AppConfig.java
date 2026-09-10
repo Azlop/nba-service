@@ -1,14 +1,16 @@
 package com.carta.nbaservice.configurations;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.Map;
 
+@Setter
+@Getter
 @Configuration
 @ConfigurationProperties(prefix = "freenba.api")
-@Data
 public class AppConfig {
 
     private String host;

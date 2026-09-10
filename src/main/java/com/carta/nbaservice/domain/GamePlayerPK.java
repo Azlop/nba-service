@@ -1,17 +1,13 @@
 package com.carta.nbaservice.domain;
 
-import lombok.AllArgsConstructor;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
 import java.io.Serializable;
 
 @Embeddable
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class GamePlayerPK implements Serializable {
 
     @Column(name = "game_id")

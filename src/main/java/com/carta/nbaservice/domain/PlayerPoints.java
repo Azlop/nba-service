@@ -1,23 +1,12 @@
 package com.carta.nbaservice.domain;
 
-import lombok.AllArgsConstructor;
+import jakarta.persistence.*;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.MapsId;
 import java.io.Serializable;
 
 @Entity
 @Data
-@AllArgsConstructor
-@EqualsAndHashCode
-@NoArgsConstructor
 public class PlayerPoints implements Serializable {
 
     @EmbeddedId

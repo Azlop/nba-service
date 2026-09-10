@@ -5,22 +5,18 @@ import com.carta.nbaservice.entities.DataMatches;
 import com.carta.nbaservice.entities.DataPlayers;
 import com.carta.nbaservice.entities.Match;
 import com.carta.nbaservice.entities.PlayerStatistics;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -31,7 +27,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 
 @ExtendWith(MockitoExtension.class)
-class NbaServiceImplTest {
+class NbaServiceTest {
 
     private NbaService nbaService;
     @Mock
@@ -46,7 +42,7 @@ class NbaServiceImplTest {
         appConfig.setBaseUrl("https://localhost");
         appConfig.setKey("key");
         appConfig.setHeaders(Map.of("headerKey", "headerValue"));
-        nbaService = new NbaServiceImpl(restTemplate, appConfig);
+        nbaService = new NbaService(restTemplate, appConfig);
         HttpHeaders httpHeaders = new HttpHeaders();
         appConfig.getHeaders().forEach(httpHeaders::set);
         httpEntity = new HttpEntity<>(httpHeaders);
@@ -65,7 +61,7 @@ class NbaServiceImplTest {
     }
 
     @Test
-    void givenDate_whenGettingGames_thenShouldReturnAllGamesForTheDate() throws JsonProcessingException {
+    void givenDate_whenGettingGames_thenShouldReturnAllGamesForTheDate() throws IOException, URISyntaxException {
         String date = "2021-03-28";
         String json = readJsonFile("/games_by_date.json");
         DataMatches dataMatches = objectMapper.readValue(json, DataMatches.class);
@@ -80,8 +76,7 @@ class NbaServiceImplTest {
     }
 
     @Test
-    void givenGameIdWithTwoPages_whenGettingPlayerStatistics_thenShouldReturnPlayersStatisticsForGame() throws
-        JsonProcessingException {
+    void givenGameIdWithTwoPages_whenGettingPlayerStatistics_thenShouldReturnPlayersStatisticsForGame() throws IOException, URISyntaxException {
         Integer gameId = 264405;
         String jsonPage1 = readJsonFile("/stats_for_game_page_1.json");
         String jsonPage2 = readJsonFile("/stats_for_game_page_2.json");
@@ -102,8 +97,7 @@ class NbaServiceImplTest {
         assertThat(players, hasSize(27));
     }
 
-    @SneakyThrows
-    private String readJsonFile(String jsonFilePath) {
+    private String readJsonFile(String jsonFilePath) throws URISyntaxException, IOException {
         return Files.readString(Path.of(Objects.requireNonNull(getClass().getResource(jsonFilePath)).toURI()));
     }
 }
